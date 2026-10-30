@@ -27,7 +27,7 @@ public abstract class User {
     }
 
     public Recipient toRecipient() {
-        throw new UnsupportedOperationException("TODO");
+        return new Recipient(String.valueOf(id), name, email, phone, preferredChannel);
     }
 
     public long getId() {
