@@ -3,6 +3,7 @@ package com.fooddonation.model.donation;
 import com.fooddonation.model.user.Donor;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 
 public class MoneyDonation extends Donation {
     private BigDecimal amount;
@@ -18,12 +19,18 @@ public class MoneyDonation extends Donation {
 
     @Override
     public String getDescription() {
-        throw new UnsupportedOperationException("TODO");
+        return "Money donation";
     }
 
     @Override
     public int getPriority() {
-        throw new UnsupportedOperationException("TODO");
+        return 1;
+    }
+
+    /** Money never has a food expiry, including when restored or updated through Donation. */
+    @Override
+    public void setExpiry(LocalDate expiry) {
+        super.setExpiry(null);
     }
 
     public BigDecimal getAmount() {

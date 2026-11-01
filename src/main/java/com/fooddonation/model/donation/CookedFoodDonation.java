@@ -20,11 +20,11 @@ public class CookedFoodDonation extends FoodDonation {
 
     @Override
     public String getDescription() {
-        throw new UnsupportedOperationException("TODO");
+        return "Cooked food donation";
     }
 
     @Override
     public int getPriority() {
-        throw new UnsupportedOperationException("TODO");
+        return 8;
     }
 }
