@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 import java.util.EnumSet;
 import java.util.Set;
 
+/** Shared entry point that selects a Factory Method creator for each donation type. */
 public class DonationFactory {
 
     public Donation createDonation(DonationRequest request) {
@@ -76,25 +77,14 @@ public class DonationFactory {
     }
 
     private Donation buildDonation(DonationRequest data) {
-        if (data.getType() == DonationType.MONEY) {
-            return new MoneyDonation(data.getDonor(), data.getAmount());
-        }
-        FoodDonation food = switch (data.getType()) {
-            case COOKED -> new CookedFoodDonation();
-            case REFRIGERATED -> new RefrigeratedFoodDonation();
-            case FRESH -> new FreshProduceDonation();
-            case PACKAGED -> new PackagedFoodDonation();
-            case MONEY -> throw new IllegalArgumentException("Expected a food donation type");
+        DonationCreator creator = switch (data.getType()) {
+            case COOKED -> new CookedFoodCreator();
+            case REFRIGERATED -> new RefrigeratedFoodCreator();
+            case FRESH -> new FreshProduceCreator();
+            case PACKAGED -> new PackagedFoodCreator();
+            case MONEY -> new MoneyDonationCreator();
         };
-        food.setDonor(data.getDonor());
-        food.setExpiry(data.getExpiry());
-        food.setQuantity(data.getQuantity() == null ? 0 : data.getQuantity());
-        food.setUnit(data.getUnit());
-        food.setCategory(data.getCategory());
-        food.setStorageType(data.getStorageType());
-        food.setPickupStart(data.getPickupStart());
-        food.setPickupEnd(data.getPickupEnd());
-        return food;
+        return creator.buildDonation(data);
     }
 
     private void requireRequest(DonationRequest request) {
