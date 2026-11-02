@@ -12,8 +12,8 @@ Details are in [phase1-tasks.md](phase1-tasks.md).
 - [x] G5. Data classes: fields, constructors, getters/setters *(Jana)*
 - [x] G6. Shared method signatures written as empty methods *(Jana)*
 - [x] G7. `schema.sql`, `seed.sql`, `app.properties` *(Jana)*
-- [ ] G8. Git branches and pull request rules agreed *(everyone)*
-- [ ] G9. `SetupCheckTest` passes, `mvn test` works on all six machines, everyone has reviewed their classes *(everyone)*
+- [x] G8. Git branches and pull request rules agreed *(everyone)*
+- [x] G9. `SetupCheckTest` passes, `mvn test` works on all six machines, everyone has reviewed their classes *(everyone)*
 
 ## Part 2: Individual work (at the same time)
 
@@ -21,10 +21,10 @@ Details are in [phase1-tasks.md](phase1-tasks.md).
 | --- | --- | --- | --- |
 | Ezz | [ ] Donation types | [ ] DonationFactory | Resha |
 | Resha | [ ] Decorator base | [ ] Four wrappers | Ezz |
-| Wael | [ ] DatabaseConnection | [ ] DonationRepository | Jana |
+| Wael | [x] DatabaseConnection | [x] DonationRepository | Jana |
 | Mark | [ ] NotificationService | [ ] Three channels | Ashry |
 | Ashry | [x] DonationService and lifecycle | [x] Observers and AppContext | Mark |
-| Jana | [ ] Users and login | [ ] Lookup CRUD | Wael |
+| Jana | [x] Users and login | [x] Lookup CRUD | Wael |
 
 ## Final check (all six)
 
@@ -39,3 +39,9 @@ Details are in [phase1-tasks.md](phase1-tasks.md).
 | Setup compiles | Jana | `mvn test` (no tests yet) | Passed (2026-10-29) |
 | `SetupCheckTest` | Jana | `mvn test` or run in IntelliJ | Not run yet |
 | Observer, lifecycle, expiry, wiring | Ashry | `DonationServiceTest`, `ExpirySchedulerTest`, `ObserversTest`, `AppConfigTest` (32 tests, mocks) | Passed (2026-11-02) |
+| `SetupCheckTest` | Jana | `javac` + JUnit directly (not `mvn test`), JDK 27 | Passed, 2 of 2 (2026-10-30) |
+| Users and login | Jana | `UserTest`, `UserRepositoryTest`, `AuthServiceTest`, `javac` + JUnit directly, JDK 27 | Passed, 18 of 18 (2026-10-30) |
+| Lookup CRUD | Jana | `LookupRepositoryTest`, `javac` + JUnit directly, JDK 27 | Passed, 13 of 13 (2026-10-30) |
+| `SetupCheckTest` | Jana | `mvn test` or run in IntelliJ | Passed on Wael's machine (2026-10-31) |
+| `DatabaseConnection` | Wael | `DatabaseConnectionTest` (6 tests) | Passed (2026-10-31) |
+| `DonationRepository` | Wael | `DonationRepositoryTest` (10 tests, factory and decorator mocked) | Passed (2026-10-31) |

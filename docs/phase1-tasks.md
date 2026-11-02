@@ -166,8 +166,8 @@ These are the methods **other people will call**. Write them exactly like this, 
   - `List<LookupEntry> readAll(LookupType type)`
   - `Optional<LookupEntry> findByName(LookupType type, String name)`
   - `LookupEntry create(User caller, LookupType type, String name)`
-  - `void update(User caller, long id, String newName)`
-  - `void delete(User caller, long id)`
+  - `void update(User caller, LookupType type, long id, String newName)`
+  - `void delete(User caller, LookupType type, long id)`
 - [x] **`AuthService`** (Jana), constructor `AuthService(UserRepository users)`:
   - `Donor register(String name, String email, String phone, String address, DonorType type, ChannelType channel)`
   - `Optional<User> login(String email)`
@@ -265,15 +265,15 @@ Test with a small fake `Donation` subclass; you don't need Ezz's real types.
 
 **Step 1: `DatabaseConnection`.**
 
-- [ ] Private constructor and `getInstance()`, so there is only one connection; `close()` closes it.
-- [ ] Creates the schema with foreign keys on, the seeded coordinator, the five statuses and add-on storage.
-- [ ] Running setup/reset twice doesn't create duplicate seed rows.
+- [x] Private constructor and `getInstance()`, so there is only one connection; `close()` closes it.
+- [x] Creates the schema with foreign keys on, the seeded coordinator, the five statuses and add-on storage.
+- [x] Running setup/reset twice doesn't create duplicate seed rows.
 
 **Step 2: `DonationRepository`.** `save`, `findById`, `findAll`, `findByDonor`, `findByStatus`, `updateStatus`.
 
-- [ ] Saves and loads all donation fields plus add-ons, using parameterized SQL.
-- [ ] Loading uses the factory's rebuild method, so ID/status/date are kept.
-- [ ] Two donors only see their own donations, and a failed save leaves nothing half-written.
+- [x] Saves and loads all donation fields plus add-ons, using parameterized SQL.
+- [x] Loading uses the factory's rebuild method, so ID/status/date are kept.
+- [x] Two donors only see their own donations, and a failed save leaves nothing half-written.
 
 Test with a temporary SQLite file and a mocked factory.
 
@@ -313,15 +313,15 @@ Test with mocks for the factory, repositories and notification service, and a fa
 
 **Step 1: Users and login.** `User`, `Donor`, `Coordinator`, `DonorType`, `Role`, `UserRepository`, `AuthService`.
 
-- [ ] Registration saves name, phone, email, address, donor type and channel. Email must be unique, and registration can't create a coordinator.
-- [ ] Login by email works for donors and the seeded coordinator. Profile updates keep the same user and their channel preference.
-- [ ] A user can be turned into a `Recipient` for Mark's notifications, and data is still there after reopening the database.
+- [x] Registration saves name, phone, email, address, donor type and channel. Email must be unique, and registration can't create a coordinator.
+- [x] Login by email works for donors and the seeded coordinator. Profile updates keep the same user and their channel preference.
+- [x] A user can be turned into a `Recipient` for Mark's notifications, and data is still there after reopening the database.
 
 **Step 2: Lookup CRUD.** `FoodCategory`, `StorageType`, `DonationStatus`, `LookupEntry`, `LookupType`, `LookupRepository`.
 
-- [ ] Add, view, edit and delete work for categories, storage types and statuses. Blank or duplicate names are rejected.
-- [ ] The five system statuses can't be renamed or deleted, and a lookup used by a donation can't be deleted.
-- [ ] Only coordinators can manage lookups; donors are refused.
+- [x] Add, view, edit and delete work for categories, storage types and statuses. Blank or duplicate names are rejected.
+- [x] The five system statuses can't be renamed or deleted, and a lookup used by a donation can't be deleted.
+- [x] Only coordinators can manage lookups; donors are refused.
 
 Test with your own temporary SQLite database built from the shared schema. Insert test donations with plain SQL.
 
