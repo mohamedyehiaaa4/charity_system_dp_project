@@ -41,7 +41,7 @@ public class UserRepository {
                 }
                 return user;   
             } catch (SQLException e) {
-                throw new RuntimeException("Could not save user " + user.getEmail(), e);
+                throw new IllegalStateException("Could not save user " + user.getEmail(), e);
             }
         }
     }
@@ -54,7 +54,7 @@ public class UserRepository {
                     return row.next() ? Optional.of(toUser(row)) : Optional.empty();
                 }
             } catch (SQLException e) {
-                throw new RuntimeException("Could not load user" + id, e);
+                throw new IllegalStateException("Could not load user " + id, e);
             }
         }
     }
@@ -67,7 +67,7 @@ public class UserRepository {
                     return row.next() ? Optional.of(toUser(row)) : Optional.empty();
                 }
             } catch (SQLException e) {
-                throw new RuntimeException("Could not load user" + email, e);
+                throw new IllegalStateException("Could not load user " + email, e);
             }
         }
     }
@@ -87,7 +87,7 @@ public class UserRepository {
                 statement.setLong(7, user.getId());
                 statement.executeUpdate();
             } catch (SQLException e) {
-                throw new RuntimeException("Could not update user " + user.getId(), e);
+                throw new IllegalStateException("Could not update user " + user.getId(), e);
             }
         }
     }

@@ -20,4 +20,4 @@ The exact class list, fields, method signatures and database tables are in [phas
 ## Done when
 
 - [x] Every decision above is agreed.
-- [ ] G1–G9 in [phase1-tasks.md](phase1-tasks.md) are all done.
+- [x] G1–G9 in [phase1-tasks.md](phase1-tasks.md) are all done.

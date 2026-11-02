@@ -21,7 +21,12 @@ public class VolunteerNotificationObserver implements DonationObserver {
             return;
         }
         for (Recipient volunteer : volunteers) {
-            notifications.notifyByPreference(volunteer, MessageTemplates.subject(event.getType()), event.getMessage());
+            // one failed send must not stop the other volunteers from hearing about the donation
+            try {
+                notifications.notifyByPreference(volunteer, MessageTemplates.subject(event.getType()), event.getMessage());
+            } catch (RuntimeException e) {
+                System.err.println("Could not notify volunteer " + volunteer.getId() + ": " + e.getMessage());
+            }
         }
     }
 }

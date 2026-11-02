@@ -2,6 +2,7 @@
 
 Food donation system for CSE336 (Software Design Patterns).
 
+- Needs JDK 17 or 21 and Maven 3.9+
 - Build and test: `mvn test`
 - Plan and tasks: [docs/plan.md](docs/plan.md), [docs/phase1-tasks.md](docs/phase1-tasks.md)
 

@@ -32,6 +32,14 @@ public abstract class Donation {
 
     public abstract int getPriority();
 
+    /**
+     * The donation without any add-on wrappers. Use it before checking the real type,
+     * e.g. {@code donation.getBaseDonation() instanceof FoodDonation food}.
+     */
+    public Donation getBaseDonation() {
+        return this;
+    }
+
     public long getId() {
         return id;
     }

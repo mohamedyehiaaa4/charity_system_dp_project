@@ -34,7 +34,7 @@ public class LookupRepository {
                 }
                 return entries;
             } catch (SQLException e) {
-                throw new RuntimeException("Could not read " + type, e);
+                throw new IllegalStateException("Could not read " + type, e);
             }
         }
     }
@@ -48,7 +48,7 @@ public class LookupRepository {
                     return row.next() ? Optional.of(toEntry(type, row)) : Optional.empty();
                 }
             } catch (SQLException e) {
-                throw new RuntimeException("Could not read " + type, e);
+                throw new IllegalStateException("Could not read " + type, e);
             }
         }
     }
@@ -70,7 +70,7 @@ public class LookupRepository {
                     return newEntry(type, keys.getLong(1), cleanName, false);
                 }
             } catch (SQLException e) {
-                throw new RuntimeException("Could not create " + cleanName, e);
+                throw new IllegalStateException("Could not create " + cleanName, e);
             }
         }
     }
@@ -90,7 +90,7 @@ public class LookupRepository {
                 statement.setLong(2, id);
                 statement.executeUpdate();
             } catch (SQLException e) {
-                throw new RuntimeException("Could not update entry " + id, e);
+                throw new IllegalStateException("Could not update entry " + id, e);
             }
         }
     }
@@ -107,7 +107,7 @@ public class LookupRepository {
                 statement.setLong(1, id);
                 statement.executeUpdate();
             } catch (SQLException e) {
-                throw new RuntimeException("Could not delete entry " + id, e);
+                throw new IllegalStateException("Could not delete entry " + id, e);
             }
         }
     }
@@ -139,7 +139,7 @@ public class LookupRepository {
                 }
             }
         } catch (SQLException e) {
-            throw new RuntimeException("Could not read entry " + id, e);
+            throw new IllegalStateException("Could not read entry " + id, e);
         }
     }
 
@@ -151,7 +151,7 @@ public class LookupRepository {
                 return row.next();
             }
         } catch (SQLException e) {
-            throw new RuntimeException("Could not check entry " + id, e);
+            throw new IllegalStateException("Could not check entry " + id, e);
         }
     }
 

@@ -13,7 +13,7 @@ Task details are in [phase1-tasks.md](phase1-tasks.md), the decisions we agreed 
 
 **Goal:** a project that compiles and contains every class we need. Methods can be empty at this point. After Part 1, nobody has to wait for anyone else.
 
-**Jana set up the project** (G1–G7): repository files, `pom.xml`, the full package structure, all enums, data classes and shared method signatures, plus the schema, seed data and `app.properties`. Everyone else's part of Part 1 is to review it:
+**Jana set up the project** (G1–G6): repository files, `pom.xml`, the full package structure, all enums, data classes and shared method signatures. **Wael owns the schema and seed data** (G7), and Ashry owns `app.properties`. Everyone else's part of Part 1 is to review it:
 
 1. Clone the repository and open it in IntelliJ (or run `mvn test`). It must build on your machine.
 2. Read the classes you own and the classes you will call. Check the fields and method signatures match what you need.

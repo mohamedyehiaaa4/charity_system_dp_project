@@ -33,7 +33,7 @@ public abstract class DonationDecorator extends Donation {
     }
 
     /** Which add-on this wrapper is. Each concrete decorator returns its own. */
-    public abstract AddOn getAddOn(); // bla bla
+    public abstract AddOn getAddOn();
 
     // ---- The parts decorators change. Each concrete decorator must write its own. ----
     @Override
@@ -41,6 +41,12 @@ public abstract class DonationDecorator extends Donation {
 
     @Override
     public abstract int getPriority();
+
+    /** A wrapper is never a FoodDonation or MoneyDonation itself, so hand back the real one inside. */
+    @Override
+    public Donation getBaseDonation() {
+        return unwrap(this);
+    }
 
     // ---- Helpers for DB ----
 

@@ -8,16 +8,16 @@ Code goes under `src/main/java/com/fooddonation/`, tests under `src/test/java/co
 
 By the end of Part 1, the repository contains **every folder, every file and every class**, the database schema is written, and the project compiles. Nobody starts Part 2 until G1–G9 are all checked.
 
-**Jana set up G1–G7.** Everyone else reviews them (G9): if a class, field or signature you own or use is wrong, say so before Part 2 starts.
+**Jana set up G1–G6, Wael owns the schema and seed data (G7).** Everyone else reviews them (G9): if a class, field or signature you own or use is wrong, say so before Part 2 starts.
 
 ### G1. Tools and repository *(Jana)*
 
-- [ ] Everyone installs **JDK 17 or 21** (not newer, since test libraries may not support it yet), Maven 3.9+, Git and an IDE (IntelliJ, or VS Code with the Java extension). Check with `java -version` and `mvn -version`.
-- [ ] Add all six as collaborators on the GitHub repository (`charity_system_dp_project`).
+- [x] Everyone installs **JDK 17 or 21** (not newer, since test libraries may not support it yet), Maven 3.9+, Git and an IDE (IntelliJ, or VS Code with the Java extension). Check with `java -version` and `mvn -version`.
+- [x] Add all six as collaborators on the GitHub repository (`charity_system_dp_project`).
 - [x] `.gitignore` with: `target/`, `*.db`, `logs/`, `.idea/`, `.vscode/`, `*.iml`.
 - [x] `README.md`: how to build, links to the docs, where each design pattern lives, and what each package contains.
-- [ ] Commit the setup and push it to `main`.
-- [ ] Everyone clones the repository and builds it once.
+- [x] Commit the setup and push it to `main`.
+- [x] Everyone clones the repository and builds it once.
 
 ### G2. Maven build file *(Jana)*
 
@@ -101,7 +101,6 @@ src/main/resources/
 └── app.properties                  (Ashry) timezone, db path, log paths, volunteer contacts
 
 src/test/java/com/fooddonation/
-├── SetupCheckTest.java             temporary: checks JUnit, Mockito and SQLite work (see G9)
 └── (each person adds test classes in the same package as their code)
 ```
 
@@ -191,7 +190,7 @@ Rules for all classes:
 - Collaborators are passed in through the **constructor**, so tests can pass mocks.
 - Never call `DatabaseConnection.getInstance()` inside a repository or service method. Only `AppContext` calls it.
 
-### G7. Database schema and seed data *(Jana; Wael and Ashry review)*
+### G7. Database schema and seed data *(Wael; Jana and Ashry review)*
 
 - [x] `schema.sql` starts with `PRAGMA foreign_keys = ON;` and creates:
 
@@ -213,18 +212,18 @@ Rules for all classes:
 
 ### G8. Git workflow *(everyone agrees)*
 
-- [ ] `main` must always compile. Nobody pushes directly to `main` after Part 1.
-- [ ] Each person works on their own branch: `ezz/factory`, `resha/decorator`, `wael/singleton`, `mark/strategy`, `ashry/observer`, `jana/users-lookups`.
-- [ ] Merge through a pull request, approved by your reviewer (see the table in [plan.md](plan.md)). Run `mvn test` before opening it.
-- [ ] Only Ezz changes `pom.xml`. Only Wael changes `schema.sql` / `seed.sql`. Changing a G6 signature needs a message to the group first.
+- [x] `main` must always compile. Nobody pushes directly to `main` after Part 1.
+- [x] Each person works on their own branch: `ezz/factory`, `resha/decorator`, `wael/singleton`, `mark/strategy`, `ashry/observer`, `jana/users-lookups`.
+- [x] Merge through a pull request, approved by your reviewer (see the table in [plan.md](plan.md)). Run `mvn test` before opening it.
+- [x] Only Ezz changes `pom.xml`. Only Wael changes `schema.sql` / `seed.sql`. Changing a G6 signature needs a message to the group first.
 
 ### G9. Final setup check *(everyone)*
 
-- [ ] The setup is pushed to `main`.
-- [ ] `SetupCheckTest` passes: it mocks `DonationFactory` and `DatabaseConnection` and runs a query on an in-memory SQLite database. In IntelliJ: open the file and click ▶ next to the class name. In a terminal: `mvn test`.
-- [ ] `mvn test` passes on **all six** machines.
-- [ ] Each person reads the classes they own and the ones they will call, and confirms the fields and signatures. If something is wrong, fix it now, not in Part 2.
-- [ ] Delete `SetupCheckTest` once everyone has run it.
+- [x] The setup is pushed to `main`.
+- [x] `SetupCheckTest` passes: it mocks `DonationFactory` and `DatabaseConnection` and runs a query on an in-memory SQLite database. In IntelliJ: open the file and click ▶ next to the class name. In a terminal: `mvn test`.
+- [x] `mvn test` passes on **all six** machines.
+- [x] Each person reads the classes they own and the ones they will call, and confirms the fields and signatures. If something is wrong, fix it now, not in Part 2.
+- [x] Delete `SetupCheckTest` once everyone has run it. *(deleted 2026-11-02)*
 - [x] The decisions in [contracts.md](contracts.md) are agreed.
 
 ---
@@ -237,27 +236,27 @@ Each person does their two steps in order. Use mocks or fake classes in your tes
 
 **Step 1: Donation types.** `FoodDonation`, the four food types (cooked, refrigerated, fresh, packaged), `MoneyDonation`, `DonationType`, `Unit`.
 
-- [ ] Each type has the right description and expiry. Money has no expiry and no food fields.
-- [ ] Base priorities: cooked 8, refrigerated 7, fresh 6, packaged 3, money 1.
+- [x] Each type has the right description and expiry. Money has no expiry and no food fields.
+- [x] Base priorities: cooked 8, refrigerated 7, fresh 6, packaged 3, money 1.
 
 **Step 2: `DonationFactory`.**
 
-- [ ] Creates all five types, and rejects missing fields, amounts/quantities of zero or less, and bad pickup times, with clear error messages.
-- [ ] `applyAddOns` wraps the donation in the add-on decorators in a fixed order, with no duplicates.
-- [ ] Rebuilding a donation from the database keeps its ID, status and date, and skips new-donation checks.
+- [x] Creates all five types, and rejects missing fields, amounts/quantities of zero or less, and bad pickup times, with clear error messages.
+- [x] `applyAddOns` wraps the donation in the add-on decorators in a fixed order, with no duplicates.
+- [x] Rebuilding a donation from the database keeps its ID, status and date, and skips new-donation checks.
 
 ### Resha: Decorator
 
 **Step 1: `DonationDecorator` base.**
 
-- [ ] Extends `Donation` and wraps another `Donation`.
-- [ ] All getters/setters pass through to the wrapped donation, so the two never get out of sync.
-- [ ] `unwrap()` and `collectAddOns()` work for one wrapper and for several stacked wrappers.
+- [x] Extends `Donation` and wraps another `Donation`.
+- [x] All getters/setters pass through to the wrapped donation, so the two never get out of sync.
+- [x] `unwrap()` and `collectAddOns()` work for one wrapper and for several stacked wrappers.
 
 **Step 2: Four wrappers.** `HomePickup`, `RefrigeratedTransport`, `UrgentPriority`, `SpecialPackaging`.
 
-- [ ] Each adds its text to the description and its priority bonus: +1, +1, +5, +0.
-- [ ] Stacked wrappers keep the original type, expiry and ID and add up all bonuses.
+- [x] Each adds its text to the description and its priority bonus: +1, +1, +5, +0.
+- [x] Stacked wrappers keep the original type, expiry and ID and add up all bonuses.
 
 Test with a small fake `Donation` subclass; you don't need Ezz's real types.
 
@@ -281,15 +280,15 @@ Test with a temporary SQLite file and a mocked factory.
 
 **Step 1: `NotificationService` and `NotificationStrategy`.**
 
-- [ ] The service sends through whichever strategy is set.
-- [ ] The strategy can be changed at runtime (`setStrategy`) or picked from the recipient's preference (`notifyByPreference`).
-- [ ] A missing or invalid channel gives a clear, documented result.
+- [x] The service sends through whichever strategy is set.
+- [x] The strategy can be changed at runtime (`setStrategy`) or picked from the recipient's preference (`notifyByPreference`).
+- [x] A missing or invalid channel gives a clear, documented result.
 
 **Step 2: Three channels.** `InAppNotification` (with `InAppInbox`), `EmailNotification`, `SmsNotification`.
 
-- [ ] In-app messages are stored per recipient; nobody sees anyone else's messages.
-- [ ] Email and SMS write recipient, subject and message to local log files.
-- [ ] Changing the preference changes the channel used for the next message.
+- [x] In-app messages are stored per recipient; nobody sees anyone else's messages.
+- [x] Email and SMS write recipient, subject and message to local log files.
+- [x] Changing the preference changes the channel used for the next message.
 
 ### Ashry: Observer
 

@@ -15,6 +15,8 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -85,5 +87,15 @@ class ObserversTest {
 
         verify(notifications).notifyByPreference(coordinatorRecipient, "Donation near expiry", "expires soon");
         verify(notifications, times(1)).notifyByPreference(any(), any(), any());
+    }
+
+    @Test
+    void oneFailedVolunteerDoesNotStopTheOthers() {
+        doThrow(new IllegalStateException("log file locked"))
+                .when(notifications).notifyByPreference(eq(volunteerA), any(), any());
+
+        volunteerObserver.update(new DonationEvent(EventType.DONATION_SUBMITTED, donation, "new one", LocalDateTime.now()));
+
+        verify(notifications).notifyByPreference(volunteerB, "New donation submitted", "new one");
     }
 }
