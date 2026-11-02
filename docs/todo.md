@@ -23,7 +23,7 @@ Details are in [phase1-tasks.md](phase1-tasks.md).
 | Resha | [ ] Decorator base | [ ] Four wrappers | Ezz |
 | Wael | [ ] DatabaseConnection | [ ] DonationRepository | Jana |
 | Mark | [ ] NotificationService | [ ] Three channels | Ashry |
-| Ashry | [ ] DonationService and lifecycle | [ ] Observers and AppContext | Mark |
+| Ashry | [x] DonationService and lifecycle | [x] Observers and AppContext | Mark |
 | Jana | [ ] Users and login | [ ] Lookup CRUD | Wael |
 
 ## Final check (all six)
@@ -38,3 +38,4 @@ Details are in [phase1-tasks.md](phase1-tasks.md).
 | --- | --- | --- | --- |
 | Setup compiles | Jana | `mvn test` (no tests yet) | Passed (2026-10-29) |
 | `SetupCheckTest` | Jana | `mvn test` or run in IntelliJ | Not run yet |
+| Observer, lifecycle, expiry, wiring | Ashry | `DonationServiceTest`, `ExpirySchedulerTest`, `ObserversTest`, `AppConfigTest` (32 tests, mocks) | Passed (2026-11-02) |

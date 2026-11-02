@@ -295,15 +295,17 @@ Test with a temporary SQLite file and a mocked factory.
 
 **Step 1: `DonationService` and lifecycle.** `DonationSubject`, `DonationObserver`, `DonationEvent`, `EventType`, `DonationService`, `ExpiryScheduler`.
 
-- [ ] Observers can attach/detach. Events are sent only after a save or status update succeeds.
-- [ ] Only coordinators can change status: Submitted → Approved/Rejected, Approved → Picked up, Picked up → Delivered. Rejecting needs a reason, and final statuses can't change.
-- [ ] Expiry check (every 60 seconds and on demand) warns about food expiring within 48 hours, skips money/finished/expired donations, warns only once per donation, and stops cleanly.
+- [x] Observers can attach/detach. Events are sent only after a save or status update succeeds.
+- [x] Only coordinators can change status: Submitted → Approved/Rejected, Approved → Picked up, Picked up → Delivered. Rejecting needs a reason, and final statuses can't change.
+- [x] Expiry check (every 60 seconds and on demand) warns about food expiring within 48 hours, skips money/finished/expired donations, warns only once per donation, and stops cleanly.
 
 **Step 2: Observers and app wiring.** `CoordinatorDashboardObserver`, `DonorNotificationObserver`, `VolunteerNotificationObserver`, `MessageTemplates`, `AppConfig`, `AppContext`, `app.properties`.
 
-- [ ] New donation → coordinator and volunteers are notified. Status change/rejection → donor is notified once (with the reason). Near expiry → coordinator only.
-- [ ] Observers send through `NotificationService` using each person's current preference.
-- [ ] `AppContext` creates everything, registers the observers once, and starts/stops the scheduler.
+- [x] New donation → coordinator and volunteers are notified. Status change/rejection → donor is notified once (with the reason). Near expiry → coordinator only.
+- [x] Observers send through `NotificationService` using each person's current preference.
+- [x] `AppContext` creates everything, registers the observers once, and starts/stops the scheduler.
+
+`app.properties` also has `coordinator.email`, which the coordinator observer uses to find the coordinator. `DonationService` and `ExpiryScheduler` each have an extra constructor that takes the warning window / check period from the config.
 
 Test with mocks for the factory, repositories and notification service, and a fake clock.
 
