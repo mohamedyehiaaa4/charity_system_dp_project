@@ -15,13 +15,20 @@ import com.fooddonation.persistence.UserRepository;
 import java.time.Clock;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.CopyOnWriteArrayList;
 
+/**
+ * Observer pattern: the Subject. Runs the donation lifecycle and tells every attached
+ * observer about it, without knowing who they are or how they notify people.
+ */
 public class DonationService implements DonationSubject {
     private final DonationFactory factory;
     private final DonationRepository donations;
     private final LookupRepository lookups;
     private final UserRepository users;
     private final Clock clock;
+    // copy-on-write so the expiry scheduler thread can notify while observers are attached
+    private final List<DonationObserver> observers = new CopyOnWriteArrayList<>();
 
     public DonationService(DonationFactory factory, DonationRepository donations, LookupRepository lookups,
                            UserRepository users, Clock clock) {
@@ -34,17 +41,29 @@ public class DonationService implements DonationSubject {
 
     @Override
     public void attach(DonationObserver observer) {
-        throw new UnsupportedOperationException("TODO");
+        if (observer == null) {
+            throw new IllegalArgumentException("Observer is required");
+        }
+        if (!observers.contains(observer)) {
+            observers.add(observer);
+        }
     }
 
     @Override
     public void detach(DonationObserver observer) {
-        throw new UnsupportedOperationException("TODO");
+        observers.remove(observer);
     }
 
     @Override
     public void notifyObservers(DonationEvent event) {
-        throw new UnsupportedOperationException("TODO");
+        for (DonationObserver observer : observers) {
+            // one failing observer must not stop the others from hearing about the event
+            try {
+                observer.update(event);
+            } catch (RuntimeException e) {
+                System.err.println("Observer " + observer.getClass().getSimpleName() + " failed: " + e.getMessage());
+            }
+        }
     }
 
     public Donation submitDonation(User caller, DonationRequest request, Set<AddOn> addOns) {
