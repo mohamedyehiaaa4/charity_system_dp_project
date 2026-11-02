@@ -265,15 +265,15 @@ Test with a small fake `Donation` subclass; you don't need Ezz's real types.
 
 **Step 1: `DatabaseConnection`.**
 
-- [ ] Private constructor and `getInstance()`, so there is only one connection; `close()` closes it.
-- [ ] Creates the schema with foreign keys on, the seeded coordinator, the five statuses and add-on storage.
-- [ ] Running setup/reset twice doesn't create duplicate seed rows.
+- [x] Private constructor and `getInstance()`, so there is only one connection; `close()` closes it.
+- [x] Creates the schema with foreign keys on, the seeded coordinator, the five statuses and add-on storage.
+- [x] Running setup/reset twice doesn't create duplicate seed rows.
 
 **Step 2: `DonationRepository`.** `save`, `findById`, `findAll`, `findByDonor`, `findByStatus`, `updateStatus`.
 
-- [ ] Saves and loads all donation fields plus add-ons, using parameterized SQL.
-- [ ] Loading uses the factory's rebuild method, so ID/status/date are kept.
-- [ ] Two donors only see their own donations, and a failed save leaves nothing half-written.
+- [x] Saves and loads all donation fields plus add-ons, using parameterized SQL.
+- [x] Loading uses the factory's rebuild method, so ID/status/date are kept.
+- [x] Two donors only see their own donations, and a failed save leaves nothing half-written.
 
 Test with a temporary SQLite file and a mocked factory.
 
