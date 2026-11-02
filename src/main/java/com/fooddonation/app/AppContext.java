@@ -2,6 +2,7 @@ package com.fooddonation.app;
 
 import com.fooddonation.event.CoordinatorDashboardObserver;
 import com.fooddonation.event.DonorNotificationObserver;
+import com.fooddonation.event.ReceiptObserver;
 import com.fooddonation.event.VolunteerNotificationObserver;
 import com.fooddonation.model.donation.DonationFactory;
 import com.fooddonation.notification.ChannelType;
@@ -17,6 +18,7 @@ import com.fooddonation.persistence.UserRepository;
 import com.fooddonation.service.AuthService;
 import com.fooddonation.service.DonationService;
 import com.fooddonation.service.ExpiryScheduler;
+import com.fooddonation.service.ReceiptService;
 
 import java.time.Clock;
 import java.util.Map;
@@ -34,6 +36,7 @@ public class AppContext implements AutoCloseable {
     private final InAppInbox inbox;
     private final NotificationService notifications;
     private final DonationService donationService;
+    private final ReceiptService receipts;
     private final ExpiryScheduler scheduler;
 
     public AppContext(AppConfig config) {
@@ -52,12 +55,15 @@ public class AppContext implements AutoCloseable {
                 ChannelType.EMAIL, new EmailNotification(config.emailLog()),
                 ChannelType.SMS, new SmsNotification(config.smsLog())));
 
+        Clock clock = Clock.system(config.timezone());
         donationService = new DonationService(factory, donations, lookups, users,
-                Clock.system(config.timezone()), config.expiryWarningWindow());
+                clock, config.expiryWarningWindow());
+        receipts = new ReceiptService(donations, clock);
         // observers are attached once, here
         donationService.attach(new CoordinatorDashboardObserver(notifications, users, config.coordinatorEmail()));
         donationService.attach(new DonorNotificationObserver(notifications));
         donationService.attach(new VolunteerNotificationObserver(notifications, config.volunteers()));
+        donationService.attach(new ReceiptObserver(receipts, notifications));
 
         scheduler = new ExpiryScheduler(donationService, config.expiryCheckPeriod());
     }
@@ -100,6 +106,10 @@ public class AppContext implements AutoCloseable {
 
     public DonationService getDonationService() {
         return donationService;
+    }
+
+    public ReceiptService getReceipts() {
+        return receipts;
     }
 
     public ExpiryScheduler getScheduler() {

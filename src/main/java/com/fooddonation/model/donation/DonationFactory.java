@@ -22,6 +22,7 @@ public class DonationFactory {
             require(request.getAmount() != null, "Amount is required");
             require(request.getAmount().signum() > 0, "Amount must be greater than zero");
         } else {
+            require(!isBlank(request.getFoodName()), "Food name is required");
             require(request.getQuantity() != null, "Quantity is required");
             require(Double.isFinite(request.getQuantity()) && request.getQuantity() > 0,
                     "Quantity must be finite and greater than zero");
@@ -33,6 +34,13 @@ public class DonationFactory {
             require(request.getPickupEnd() != null, "Pickup end is required");
             require(request.getPickupStart().isBefore(request.getPickupEnd()),
                     "Pickup start must be before pickup end");
+            // most donors give food from home, so the pickup address defaults to the donor's address
+            if (isBlank(request.getPickupAddress())) {
+                request.setPickupAddress(request.getDonor().getAddress());
+            }
+            require(!isBlank(request.getPickupAddress()), "Pickup address is required");
+            request.setFoodName(request.getFoodName().trim());
+            request.setPickupAddress(request.getPickupAddress().trim());
         }
         return buildDonation(request);
     }
@@ -90,6 +98,10 @@ public class DonationFactory {
     private void requireRequest(DonationRequest request) {
         require(request != null, "Donation request is required");
         require(request.getType() != null, "Donation type is required");
+    }
+
+    private static boolean isBlank(String text) {
+        return text == null || text.isBlank();
     }
 
     private void require(boolean valid, String message) {

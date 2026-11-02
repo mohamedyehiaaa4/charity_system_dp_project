@@ -8,27 +8,39 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public abstract class FoodDonation extends Donation {
+    private String foodName;
     private double quantity;
     private Unit unit;
     private FoodCategory category;
     private StorageType storageType;
     private LocalDateTime pickupStart;
     private LocalDateTime pickupEnd;
+    private String pickupAddress;
 
     protected FoodDonation(DonationType type) {
         super(type);
     }
 
-    protected FoodDonation(Donor donor, DonationType type, LocalDate expiry, double quantity, Unit unit,
-                           FoodCategory category, StorageType storageType,
-                           LocalDateTime pickupStart, LocalDateTime pickupEnd) {
+    protected FoodDonation(Donor donor, DonationType type, LocalDate expiry, String foodName, double quantity,
+                           Unit unit, FoodCategory category, StorageType storageType,
+                           LocalDateTime pickupStart, LocalDateTime pickupEnd, String pickupAddress) {
         super(donor, type, expiry);
+        this.foodName = foodName;
         this.quantity = quantity;
         this.unit = unit;
         this.category = category;
         this.storageType = storageType;
         this.pickupStart = pickupStart;
         this.pickupEnd = pickupEnd;
+        this.pickupAddress = pickupAddress;
+    }
+
+    public String getFoodName() {
+        return foodName;
+    }
+
+    public void setFoodName(String foodName) {
+        this.foodName = foodName;
     }
 
     public double getQuantity() {
@@ -77,5 +89,13 @@ public abstract class FoodDonation extends Donation {
 
     public void setPickupEnd(LocalDateTime pickupEnd) {
         this.pickupEnd = pickupEnd;
+    }
+
+    public String getPickupAddress() {
+        return pickupAddress;
+    }
+
+    public void setPickupAddress(String pickupAddress) {
+        this.pickupAddress = pickupAddress;
     }
 }

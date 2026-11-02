@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.fooddonation.controller.ProfileController" styleClass="page" spacing="14" maxWidth="620">
+    <GridPane styleClass="form" hgap="12" vgap="10">
+        <columnConstraints>
+            <ColumnConstraints minWidth="150"/>
+            <ColumnConstraints hgrow="ALWAYS"/>
+        </columnConstraints>
+        <Label text="Name" GridPane.rowIndex="0"/>
+        <TextField fx:id="nameField" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+        <Label text="Email" GridPane.rowIndex="1"/>
+        <TextField fx:id="emailField" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+        <Label text="Phone" GridPane.rowIndex="2"/>
+        <TextField fx:id="phoneField" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+        <Label text="Address" GridPane.rowIndex="3"/>
+        <TextField fx:id="addressField" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+        <Label text="Notify me by" GridPane.rowIndex="4"/>
+        <ComboBox fx:id="channelBox" maxWidth="Infinity" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
+    </GridPane>
+    <!-- donors only -->
+    <HBox fx:id="donorTypeRow" spacing="12" alignment="CENTER_LEFT" styleClass="form">
+        <Label text="Donor type" minWidth="150"/>
+        <ComboBox fx:id="donorTypeBox" HBox.hgrow="ALWAYS" maxWidth="Infinity"/>
+    </HBox>
+    <Label text="Email and SMS are simulated: they are written to the log files instead of being sent." styleClass="muted" wrapText="true"/>
+    <HBox spacing="10">
+        <Button text="Save profile" defaultButton="true" onAction="#save" styleClass="primary"/>
+        <Button text="Undo changes" onAction="#refresh"/>
+    </HBox>
+    <Label fx:id="message" wrapText="true" styleClass="message"/>
+</VBox>

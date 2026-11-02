@@ -18,10 +18,12 @@ import com.fooddonation.notification.ChannelType;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 import org.mockito.ArgumentCaptor;
 import org.mockito.MockedStatic;
 
 import java.math.BigDecimal;
+import java.nio.file.Path;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -49,6 +51,9 @@ class DonationRepositoryTest {
     private static final LocalDateTime PICKUP_START = LocalDateTime.of(2026, 10, 30, 10, 0);
     private static final LocalDateTime PICKUP_END = LocalDateTime.of(2026, 10, 30, 12, 0);
 
+    @TempDir
+    Path tempDir;
+
     private DatabaseConnection db;
     private DonationFactory factory;
     private Donation restored;
@@ -62,8 +67,9 @@ class DonationRepositoryTest {
 
     @BeforeEach
     void setUp() throws SQLException {
-        db = DatabaseConnection.getInstance();
-        db.reset();
+        // a temporary database, so the tests never wipe the real fooddonation.db
+        db = new DatabaseConnection(tempDir.resolve("test.db").toString());
+        db.initialize();
 
         factory = mock(DonationFactory.class);
         restored = mock(Donation.class);
@@ -111,12 +117,14 @@ class DonationRepositoryTest {
         assertEquals(ahmed.getId(), d.getDonor().getId());
         assertEquals("Ahmed", d.getDonor().getName());
         assertEquals(LocalDate.of(2026, 11, 1), d.getExpiry());
+        assertEquals("Bread", d.getFoodName());
         assertEquals(Double.valueOf(5.0), d.getQuantity());
         assertEquals(Unit.KG, d.getUnit());
         assertEquals("Bakery", d.getCategory().getName());
         assertEquals("Room temperature", d.getStorageType().getName());
         assertEquals(PICKUP_START, d.getPickupStart());
         assertEquals(PICKUP_END, d.getPickupEnd());
+        assertEquals("12 Nile St, Cairo", d.getPickupAddress());
         assertNull(d.getAmount());
         assertEquals(DonationStatus.SUBMITTED, status.getValue().getName());
     }
@@ -137,6 +145,8 @@ class DonationRepositoryTest {
         verify(factory).restore(data.capture(), anyLong(), any(), any(), any(), any());
         assertEquals(new BigDecimal("250.50"), data.getValue().getAmount());
         assertNull(data.getValue().getQuantity());
+        assertNull(data.getValue().getFoodName());
+        assertNull(data.getValue().getPickupAddress());
         assertNull(data.getValue().getUnit());
         assertNull(data.getValue().getExpiry());
     }
@@ -210,10 +220,10 @@ class DonationRepositoryTest {
     }
 
     private Donation food(Donor donor) {
-        FakeFoodDonation donation = new FakeFoodDonation(donor, LocalDate.of(2026, 11, 1), 5.0, Unit.KG,
+        FakeFoodDonation donation = new FakeFoodDonation(donor, LocalDate.of(2026, 11, 1), "Bread", 5.0, Unit.KG,
                 new FoodCategory(lookupId("food_categories", "Bakery"), "Bakery", false),
                 new StorageType(lookupId("storage_types", "Room temperature"), "Room temperature", false),
-                PICKUP_START, PICKUP_END);
+                PICKUP_START, PICKUP_END, "12 Nile St, Cairo");
         donation.setStatus(submitted);
         donation.setCreatedAt(CREATED);
         return donation;
@@ -263,9 +273,11 @@ class DonationRepositoryTest {
 
     /** Stand-in for a real food donation, since only DonationFactory can create those. */
     private static class FakeFoodDonation extends FoodDonation {
-        FakeFoodDonation(Donor donor, LocalDate expiry, double quantity, Unit unit, FoodCategory category,
-                         StorageType storageType, LocalDateTime pickupStart, LocalDateTime pickupEnd) {
-            super(donor, DonationType.COOKED, expiry, quantity, unit, category, storageType, pickupStart, pickupEnd);
+        FakeFoodDonation(Donor donor, LocalDate expiry, String foodName, double quantity, Unit unit,
+                         FoodCategory category, StorageType storageType, LocalDateTime pickupStart,
+                         LocalDateTime pickupEnd, String pickupAddress) {
+            super(donor, DonationType.COOKED, expiry, foodName, quantity, unit, category, storageType,
+                    pickupStart, pickupEnd, pickupAddress);
         }
 
         @Override

@@ -45,8 +45,8 @@ public class DonationRepository {
             + "LEFT JOIN storage_types t ON t.id = d.storage_type_id ";
 
     private static final String INSERT = "INSERT INTO donations (donor_id, type, status_id, created_at, "
-            + "rejection_reason, expiry, quantity, unit, category_id, storage_type_id, pickup_start, pickup_end, "
-            + "amount, add_ons) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            + "rejection_reason, expiry, food_name, quantity, unit, category_id, storage_type_id, pickup_start, "
+            + "pickup_end, pickup_address, amount, add_ons) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
     private final DatabaseConnection db;
     private final DonationFactory factory;
@@ -64,19 +64,23 @@ public class DonationRepository {
             throw new IllegalArgumentException("A donation needs a donor, a status and a creation time");
         }
 
+        String foodName = null;
         Double quantity = null;
         String unit = null;
         Long categoryId = null;
         Long storageTypeId = null;
         String pickupStart = null;
         String pickupEnd = null;
+        String pickupAddress = null;
         if (base instanceof FoodDonation food) {
+            foodName = food.getFoodName();
             quantity = food.getQuantity();
             unit = nameOf(food.getUnit());
             categoryId = food.getCategory() == null ? null : food.getCategory().getId();
             storageTypeId = food.getStorageType() == null ? null : food.getStorageType().getId();
             pickupStart = textOf(food.getPickupStart());
             pickupEnd = textOf(food.getPickupEnd());
+            pickupAddress = food.getPickupAddress();
         }
         String amount = null;
         if (base instanceof MoneyDonation money && money.getAmount() != null) {
@@ -91,14 +95,16 @@ public class DonationRepository {
                 st.setString(4, base.getCreatedAt().toString());
                 st.setObject(5, base.getRejectionReason());
                 st.setObject(6, textOf(base.getExpiry()));
-                st.setObject(7, quantity);
-                st.setObject(8, unit);
-                st.setObject(9, categoryId);
-                st.setObject(10, storageTypeId);
-                st.setObject(11, pickupStart);
-                st.setObject(12, pickupEnd);
-                st.setObject(13, amount);
-                st.setString(14, addOnsText(DonationDecorator.collectAddOns(donation)));
+                st.setObject(7, foodName);
+                st.setObject(8, quantity);
+                st.setObject(9, unit);
+                st.setObject(10, categoryId);
+                st.setObject(11, storageTypeId);
+                st.setObject(12, pickupStart);
+                st.setObject(13, pickupEnd);
+                st.setObject(14, pickupAddress);
+                st.setObject(15, amount);
+                st.setString(16, addOnsText(DonationDecorator.collectAddOns(donation)));
                 st.executeUpdate();
                 try (ResultSet keys = st.getGeneratedKeys()) {
                     keys.next();
@@ -175,6 +181,7 @@ public class DonationRepository {
         data.setDonor(donor);
         String expiry = rs.getString("expiry");
         data.setExpiry(expiry == null ? null : LocalDate.parse(expiry));
+        data.setFoodName(rs.getString("food_name"));
         double quantity = rs.getDouble("quantity");
         data.setQuantity(rs.wasNull() ? null : quantity);
         data.setUnit(enumOf(Unit.class, rs.getString("unit")));
@@ -192,6 +199,7 @@ public class DonationRepository {
         data.setPickupStart(pickupStart == null ? null : LocalDateTime.parse(pickupStart));
         String pickupEnd = rs.getString("pickup_end");
         data.setPickupEnd(pickupEnd == null ? null : LocalDateTime.parse(pickupEnd));
+        data.setPickupAddress(rs.getString("pickup_address"));
         String amount = rs.getString("amount");
         data.setAmount(amount == null ? null : new BigDecimal(amount));
 

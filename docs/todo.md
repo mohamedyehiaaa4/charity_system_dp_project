@@ -36,22 +36,22 @@ Details are in [phase1-tasks.md](phase1-tasks.md).
 
 Must fix before the final check:
 
-- [ ] Write tests for the five donation types and `DonationFactory` (creating each type, rejected input, add-on order, `restore`) *(Ezz)*
-- [ ] Remove `/src/test/java/com/fooddonation/model/donation/` from `.gitignore`, so factory tests get committed *(Ezz)*
-- [ ] Write tests for the decorator base and the four wrappers (description text, priority bonuses, stacking, `unwrap`, `collectAddOns`). `DonationDecoratorTest` exists with 2 tests for `getBaseDonation()` only; add to it *(Resha)*
-- [ ] `DatabaseConnectionTest` and `DonationRepositoryTest` call `reset()` on the real singleton, which wipes `fooddonation.db` in the project root on every `mvn test`. Point them at a temporary database *(Wael)*
+- [x] Write tests for the five donation types and `DonationFactory` (creating each type, rejected input, add-on order, `restore`) *(Ezz; done by Mark: `DonationFactoryTest`, 29 tests)*
+- [x] Remove `/src/test/java/com/fooddonation/model/donation/` from `.gitignore`, so factory tests get committed *(Ezz; done by Mark)*
+- [x] Write tests for the decorator base and the four wrappers (description text, priority bonuses, stacking, `unwrap`, `collectAddOns`). `DonationDecoratorTest` exists with 2 tests for `getBaseDonation()` only; add to it *(Resha; done by Mark: now 14 tests)*
+- [x] `DatabaseConnectionTest` and `DonationRepositoryTest` call `reset()` on the real singleton, which wipes `fooddonation.db` in the project root on every `mvn test`. Point them at a temporary database *(Wael; done by Mark: package-private `DatabaseConnection(String dbPath)` used with a JUnit `@TempDir`)*
 
 Missing Phase 1 deliverables (from the grading table and `Food_Donation_System_Requirements.docx`):
 
-- [ ] **MVC (2 marks):** add JavaFX to `pom.xml`, build the views and the controllers in `controller/`. `plan.md` still says "No UI work in this phase", which conflicts with the requirements doc; update it *(team to decide owners)*
-- [ ] **User control panel (1 mark, DON-8):** donor screen to submit a donation, see their donations and statuses, and edit their profile and notification channel *(team to decide)*
-- [ ] **CRUD lookup screens (0.5 marks, DON-7):** coordinator screen for categories, storage types and statuses. The logic in `LookupRepository` is done; only the screen is missing *(team to decide)*
+- [x] **MVC (2 marks):** add JavaFX to `pom.xml`, build the views and the controllers in `controller/`. `plan.md` still says "No UI work in this phase", which conflicts with the requirements doc; update it *(done by Mark: JavaFX 21, 11 FXML views with one controller each, `ui/` for start-up and navigation; `plan.md` updated. Run with `mvn javafx:run`)*
+- [x] **User control panel (1 mark, DON-8):** donor screen to submit a donation, see their donations and statuses, and edit their profile and notification channel *(done by Mark: donor panel with Submit, My donations (with receipts and annual summary), Inbox and Profile tabs)*
+- [x] **CRUD lookup screens (0.5 marks, DON-7):** coordinator screen for categories, storage types and statuses. The logic in `LookupRepository` is done; only the screen is missing *(done by Mark: Lookup tables tab in the coordinator dashboard)*
 - [ ] **Class diagram (2 marks):** whole-system domain diagram and Phase 1 patterns diagram. Not in the repository yet *(team to decide)*
 
 Code doesn't match the requirements doc (fix the code or the doc):
 
-- [ ] DON-3: food donations have no **food name** and no **pickup address** (missing in `FoodDonation`, `DonationRequest` and the `donations` table) *(Ezz, Wael)*
-- [ ] DON-10: nothing generates a donation receipt or an annual tax summary. Implement, or move it to Phase 2 with Payment in the doc *(team to decide)*
+- [x] DON-3: food donations have no **food name** and no **pickup address** (missing in `FoodDonation`, `DonationRequest` and the `donations` table) *(Ezz, Wael; done by Mark)*. Both are now in `FoodDonation`, `DonationRequest` and the `food_name` / `pickup_address` columns. The food name is required; a blank pickup address defaults to the donor's address. `DatabaseConnection.initialize()` adds the two columns to an existing `fooddonation.db`, so nobody has to delete theirs
+- [x] DON-10: nothing generates a donation receipt or an annual tax summary. Implement, or move it to Phase 2 with Payment in the doc *(done by Mark)*. `ReceiptService` builds a `DonationReceipt` for any accepted donation (Approved, Picked up or Delivered) and an `AnnualDonationSummary` per donor and year (money total plus food listed in kind). `ReceiptObserver` sends the donor their receipt when a donation is approved. Receipts are built from the saved donation, so no new table. Payment details (PAY-1) stay in Phase 2
 - [ ] DON-1: the doc says donor type "company", the `DonorType` enum says `ORGANIZATION` *(Jana)*
 - [ ] DON-7: the doc says units "portions", the `Unit` enum says `PIECES` *(Ezz)*
 
@@ -77,8 +77,12 @@ Minor, can wait:
 | `DatabaseConnection` | Wael | `DatabaseConnectionTest` (6 tests) | Passed (2026-10-31) |
 | `DonationRepository` | Wael | `DonationRepositoryTest` (10 tests, factory and decorator mocked) | Passed (2026-10-31) |
 | Strategy and channels | Mark | `NotificationServiceTest`, `NotificationChannelsTest` (11 tests), `javac` + JUnit directly, JDK 27 | Passed, 11 of 11 (2026-11-02) |
-| Donation types and factory | Ezz | No tests in the repository yet | Not written |
-| Decorator and wrappers | Resha | Only `DonationDecoratorTest` (2 tests, `getBaseDonation()`); the wrappers themselves have no tests yet | Passed, 2 of 2 (2026-11-02) |
+| Donation types and factory | Ezz | `DonationFactoryTest` (29 tests, written by Mark) | Passed, 29 of 29 (2026-11-02) |
+| Decorator and wrappers | Resha | `DonationDecoratorTest` (14 tests: each wrapper, stacking, `unwrap`, `collectAddOns`, pass-through; extended by Mark) | Passed, 14 of 14 (2026-11-02) |
 | Volunteer observer keeps going after one failed send | Jana | `ObserversTest.oneFailedVolunteerDoesNotStopTheOthers` (`ObserversTest` now has 5 tests) | Passed (2026-11-02) |
 | All tests | Jana | Every test class, `javac` + JUnit directly, JDK 27 | Passed, 93 of 93 (2026-11-02) |
 | Full scenario with real classes | Jana | Script outside the repo: register → submit with add-ons → reload → approve → change channel → pick up → reject → expiry check | Worked (2026-11-02). Still to be done together for the final check |
+| DON-3 and DON-10 | Mark | `DonationRepositoryTest` (food name, pickup address), `DatabaseConnectionTest` (old database gets new columns), `ReceiptServiceTest` (9), `ReceiptObserverTest` (3) | Passed (2026-11-02) |
+| All tests | Mark | `mvn clean verify`, real `fooddonation.db` left untouched | Passed, 147 of 147 (2026-11-02) |
+| DON-3/DON-10 scenario with real classes | Mark | Script outside the repo, temporary database: register → submit food with add-on and money → reload (food name, address kept) → approve both → receipt in donor's inbox → annual summary | Worked (2026-11-02) |
+| GUI loads every screen | Mark | Script outside the repo: real `AppContext` on a scratch database, opens sign-in, register, all 4 donor tabs and all 5 coordinator tabs, takes a screenshot of each | Worked, no errors (2026-11-02). Clicking through by hand still to do |

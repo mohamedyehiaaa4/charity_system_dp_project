@@ -13,12 +13,14 @@ public class DonationRequest {
     private DonationType type;
     private Donor donor;
     private LocalDate expiry;
+    private String foodName;
     private Double quantity;
     private Unit unit;
     private FoodCategory category;
     private StorageType storageType;
     private LocalDateTime pickupStart;
     private LocalDateTime pickupEnd;
+    private String pickupAddress;
     private BigDecimal amount;
 
     public DonationRequest() {
@@ -46,6 +48,14 @@ public class DonationRequest {
 
     public void setExpiry(LocalDate expiry) {
         this.expiry = expiry;
+    }
+
+    public String getFoodName() {
+        return foodName;
+    }
+
+    public void setFoodName(String foodName) {
+        this.foodName = foodName;
     }
 
     public Double getQuantity() {
@@ -94,6 +104,14 @@ public class DonationRequest {
 
     public void setPickupEnd(LocalDateTime pickupEnd) {
         this.pickupEnd = pickupEnd;
+    }
+
+    public String getPickupAddress() {
+        return pickupAddress;
+    }
+
+    public void setPickupAddress(String pickupAddress) {
+        this.pickupAddress = pickupAddress;
     }
 
     public BigDecimal getAmount() {

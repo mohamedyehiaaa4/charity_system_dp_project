@@ -122,7 +122,7 @@ src/test/java/com/fooddonation/
 These classes hold data only. No business logic yet.
 
 - [x] **`Donation`** (Ezz): `long id`, `Donor donor`, `DonationStatus status`, `LocalDateTime createdAt`, `String rejectionReason`, `DonationType type`, `LocalDate expiry`. Also `String getDescription()` and `int getPriority()`; these can be overridden, which is how decorators change them.
-- [x] **`FoodDonation`** (Ezz): adds `double quantity`, `Unit unit`, `FoodCategory category`, `StorageType storageType`, `LocalDateTime pickupStart`, `LocalDateTime pickupEnd`.
+- [x] **`FoodDonation`** (Ezz): adds `String foodName`, `double quantity`, `Unit unit`, `FoodCategory category`, `StorageType storageType`, `LocalDateTime pickupStart`, `LocalDateTime pickupEnd`, `String pickupAddress` (DON-3; the last two text fields added 2026-11-02).
 - [x] **`MoneyDonation`** (Ezz): adds `BigDecimal amount`. Expiry is always `null`.
 - [x] **`DonationRequest`** (Ezz): `DonationType type`, `Donor donor`, plus all the food fields above, `BigDecimal amount` and `LocalDate expiry`. Unused fields stay `null`.
 - [x] **`User`** (Jana): `long id`, `String name`, `String email`, `String phone`, `String address`, `Role role`, `ChannelType preferredChannel`, plus `Recipient toRecipient()`.
@@ -200,7 +200,7 @@ Rules for all classes:
 | `food_categories` | `id` INTEGER PK, `name` TEXT NOT NULL UNIQUE, `is_system` INTEGER NOT NULL DEFAULT 0 |
 | `storage_types` | same columns as `food_categories` |
 | `donation_statuses` | same columns as `food_categories` |
-| `donations` | `id` INTEGER PK, `donor_id` FK → users, `type` TEXT NOT NULL, `status_id` FK → donation_statuses, `created_at` TEXT NOT NULL, `rejection_reason` TEXT, `expiry` TEXT, `quantity` REAL, `unit` TEXT, `category_id` FK → food_categories, `storage_type_id` FK → storage_types, `pickup_start` TEXT, `pickup_end` TEXT, `amount` TEXT, `add_ons` TEXT |
+| `donations` | `id` INTEGER PK, `donor_id` FK → users, `type` TEXT NOT NULL, `status_id` FK → donation_statuses, `created_at` TEXT NOT NULL, `rejection_reason` TEXT, `expiry` TEXT, `food_name` TEXT, `quantity` REAL, `unit` TEXT, `category_id` FK → food_categories, `storage_type_id` FK → storage_types, `pickup_start` TEXT, `pickup_end` TEXT, `pickup_address` TEXT, `amount` TEXT, `add_ons` TEXT |
 
 - [x] Dates are stored as ISO text (`2026-10-29T14:30`). `add_ons` is stored as comma-separated enum names (`HOME_PICKUP,URGENT_PRIORITY`), or empty.
 - [x] Foreign keys have no `ON DELETE CASCADE`, so deleting a lookup that is in use fails.

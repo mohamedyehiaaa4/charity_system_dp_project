@@ -5,9 +5,13 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Properties;
+import java.util.Set;
 
 public class DatabaseConnection {
     private static DatabaseConnection instance;
@@ -16,7 +20,12 @@ public class DatabaseConnection {
     private final String dbPath;
 
     private DatabaseConnection() {
-        dbPath = loadDbPath();
+        this(loadDbPath());
+    }
+
+    /** For tests only: a separate connection to another file, so tests never touch the real database. */
+    DatabaseConnection(String dbPath) {
+        this.dbPath = dbPath;
     }
 
     public static synchronized DatabaseConnection getInstance() {
@@ -43,6 +52,7 @@ public class DatabaseConnection {
     /** Runs schema.sql and seed.sql. */
     public synchronized void initialize() {
         runSqlFile("/schema.sql");
+        addMissingColumns();
         runSqlFile("/seed.sql");
     }
 
@@ -70,6 +80,28 @@ public class DatabaseConnection {
             throw new IllegalStateException("Could not close database", e);
         } finally {
             connection = null;
+        }
+    }
+
+    /**
+     * CREATE TABLE IF NOT EXISTS leaves an older database file as it was, so columns added
+     * to schema.sql later are added here instead of making everyone delete their database.
+     */
+    private void addMissingColumns() {
+        Set<String> columns = new HashSet<>();
+        try (Statement st = getConnection().createStatement()) {
+            try (ResultSet rs = st.executeQuery("PRAGMA table_info(donations)")) {
+                while (rs.next()) {
+                    columns.add(rs.getString("name"));
+                }
+            }
+            for (String column : List.of("food_name", "pickup_address")) {
+                if (!columns.contains(column)) {
+                    st.execute("ALTER TABLE donations ADD COLUMN " + column + " TEXT");
+                }
+            }
+        } catch (SQLException e) {
+            throw new IllegalStateException("Could not update the donations table", e);
         }
     }
 

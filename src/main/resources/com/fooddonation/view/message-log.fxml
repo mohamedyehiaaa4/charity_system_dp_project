@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.fooddonation.controller.MessageLogController" styleClass="page" spacing="12">
+    <HBox spacing="10" alignment="CENTER_LEFT">
+        <Label text="Messages sent to anyone whose channel is email or SMS (last 200 lines of each log)." styleClass="muted"/>
+        <Pane HBox.hgrow="ALWAYS"/>
+        <Button text="Refresh" onAction="#refresh"/>
+    </HBox>
+    <SplitPane orientation="VERTICAL" dividerPositions="0.5" VBox.vgrow="ALWAYS">
+        <VBox spacing="6">
+            <HBox spacing="8"><Label text="Email" styleClass="section"/><Label fx:id="emailPath" styleClass="muted"/></HBox>
+            <TextArea fx:id="emailArea" editable="false" VBox.vgrow="ALWAYS" styleClass="log"/>
+        </VBox>
+        <VBox spacing="6">
+            <HBox spacing="8"><Label text="SMS" styleClass="section"/><Label fx:id="smsPath" styleClass="muted"/></HBox>
+            <TextArea fx:id="smsArea" editable="false" VBox.vgrow="ALWAYS" styleClass="log"/>
+        </VBox>
+    </SplitPane>
+</VBox>

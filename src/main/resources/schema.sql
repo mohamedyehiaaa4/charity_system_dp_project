@@ -37,12 +37,14 @@ CREATE TABLE IF NOT EXISTS donations (
     created_at TEXT NOT NULL,
     rejection_reason TEXT,
     expiry TEXT,
+    food_name TEXT,
     quantity REAL,
     unit TEXT,
     category_id INTEGER REFERENCES food_categories(id),
     storage_type_id INTEGER REFERENCES storage_types(id),
     pickup_start TEXT,
     pickup_end TEXT,
+    pickup_address TEXT,
     amount TEXT,
     add_ons TEXT
 );

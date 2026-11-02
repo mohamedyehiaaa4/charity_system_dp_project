@@ -58,4 +58,4 @@ Also check rejection, changing the notification channel, protected lookups and e
 - Money donations are stored only; there is no real payment.
 - Email and SMS are written to log files; nothing is really sent.
 - Volunteers are listed in `app.properties`.
-- No UI work and no Phase 2 patterns in this phase. The structure is ready for MVC: the `model` packages are the Model, and views and controllers (`controller/`) come later.
+- No Phase 2 patterns in this phase. The GUI is JavaFX with MVC: the `model` packages are the Model, the FXML files in `resources/com/fooddonation/view/` are the Views, and `controller/` holds one controller per view. `ui/` holds the GUI wiring (start-up, navigation, signed-in user). The requirements doc asks for the GUI in Phase 1, so this replaces the earlier "no UI work" decision.

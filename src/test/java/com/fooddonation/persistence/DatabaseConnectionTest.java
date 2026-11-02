@@ -3,7 +3,11 @@ package com.fooddonation.persistence;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
+import java.nio.file.Path;
+import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -14,11 +18,15 @@ import static org.junit.jupiter.api.Assertions.assertSame;
 
 class DatabaseConnectionTest {
 
+    @TempDir
+    Path tempDir;
+
     private DatabaseConnection db;
 
+    // a separate connection to a temporary file, so the tests never wipe the real fooddonation.db
     @BeforeEach
     void setUp() {
-        db = DatabaseConnection.getInstance();
+        db = new DatabaseConnection(tempDir.resolve("test.db").toString());
         db.reset();
     }
 
@@ -71,6 +79,29 @@ class DatabaseConnectionTest {
     void getConnectionReopensAfterClose() throws SQLException {
         db.close();
         assertFalse(db.getConnection().isClosed());
+    }
+
+    @Test
+    void initializeAddsNewColumnsToAnOldDatabase() throws SQLException {
+        Path oldFile = tempDir.resolve("old.db");
+        try (Connection old = DriverManager.getConnection("jdbc:sqlite:" + oldFile);
+             Statement st = old.createStatement()) {
+            // the donations table as it was before food_name and pickup_address were added
+            st.execute("CREATE TABLE donations (id INTEGER PRIMARY KEY AUTOINCREMENT, donor_id INTEGER NOT NULL, "
+                    + "type TEXT NOT NULL, status_id INTEGER NOT NULL, created_at TEXT NOT NULL, "
+                    + "rejection_reason TEXT, expiry TEXT, quantity REAL, unit TEXT, category_id INTEGER, "
+                    + "storage_type_id INTEGER, pickup_start TEXT, pickup_end TEXT, amount TEXT, add_ons TEXT)");
+        }
+        DatabaseConnection oldDb = new DatabaseConnection(oldFile.toString());
+
+        oldDb.initialize();
+
+        try (Statement st = oldDb.getConnection().createStatement();
+             ResultSet rs = st.executeQuery("SELECT food_name, pickup_address FROM donations")) {
+            assertFalse(rs.next());
+        } finally {
+            oldDb.close();
+        }
     }
 
     private int count(String table) throws SQLException {

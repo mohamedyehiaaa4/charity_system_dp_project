@@ -1,0 +1,99 @@
+/* One stylesheet for every screen. Views use these style classes and never set colours inline. */
+.root {
+    -fx-font-family: "Segoe UI", "Helvetica Neue", sans-serif;
+    -fx-font-size: 13px;
+    -accent: #1f6f5c;
+    -accent-dark: #17594a;
+    -danger: #b3412e;
+    -ink: #1d2624;
+    -muted: #5e6b67;
+    -surface: #f3f5f4;
+    -fx-base: #eef1f0;
+    -fx-accent: -accent;
+    -fx-focus-color: -accent;
+    -fx-faint-focus-color: #1f6f5c22;
+}
+
+/* sign-in and register */
+.auth-page {
+    -fx-background-color: -surface;
+    -fx-padding: 24;
+}
+.card {
+    -fx-background-color: white;
+    -fx-background-radius: 8;
+    -fx-border-color: #d5dcda;
+    -fx-border-radius: 8;
+    -fx-padding: 28;
+    -fx-effect: dropshadow(gaussian, #00000014, 18, 0, 0, 4);
+}
+.title {
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -ink;
+}
+.field-label {
+    -fx-font-weight: bold;
+}
+
+/* panel header */
+.header {
+    -fx-background-color: -accent;
+    -fx-padding: 10 16;
+    -fx-alignment: center-left;
+}
+.header-title {
+    -fx-text-fill: white;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+}
+.header-user {
+    -fx-text-fill: #e3f0ec;
+}
+
+/* tab pages */
+.page {
+    -fx-padding: 18;
+}
+.section {
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -accent-dark;
+}
+.form > .label {
+    -fx-text-fill: -muted;
+}
+.muted {
+    -fx-text-fill: -muted;
+}
+
+/* buttons */
+.button.primary {
+    -fx-background-color: -accent;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+.button.primary:hover {
+    -fx-background-color: -accent-dark;
+}
+.button.danger {
+    -fx-text-fill: -danger;
+}
+
+/* feedback line under a form */
+.message.ok {
+    -fx-text-fill: -accent-dark;
+}
+.message.error {
+    -fx-text-fill: -danger;
+    -fx-font-weight: bold;
+}
+
+/* receipts, messages and logs */
+.document, .log {
+    -fx-font-family: "Consolas", "Menlo", monospace;
+    -fx-font-size: 12.5px;
+}
+.table-view .column-header .label {
+    -fx-font-weight: bold;
+}

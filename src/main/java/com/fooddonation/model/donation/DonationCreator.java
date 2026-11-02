@@ -8,12 +8,14 @@ abstract class DonationCreator {
         donation.setDonor(data.getDonor());
         donation.setExpiry(data.getExpiry());
         if (donation instanceof FoodDonation food) {
+            food.setFoodName(data.getFoodName());
             food.setQuantity(data.getQuantity() == null ? 0 : data.getQuantity());
             food.setUnit(data.getUnit());
             food.setCategory(data.getCategory());
             food.setStorageType(data.getStorageType());
             food.setPickupStart(data.getPickupStart());
             food.setPickupEnd(data.getPickupEnd());
+            food.setPickupAddress(data.getPickupAddress());
         }
         return donation;
     }
