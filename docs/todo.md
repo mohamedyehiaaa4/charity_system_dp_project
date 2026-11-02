@@ -23,7 +23,7 @@ Details are in [phase1-tasks.md](phase1-tasks.md).
 | Resha | [ ] Decorator base | [ ] Four wrappers | Ezz |
 | Wael | [x] DatabaseConnection | [x] DonationRepository | Jana |
 | Mark | [ ] NotificationService | [ ] Three channels | Ashry |
-| Ashry | [ ] DonationService and lifecycle | [ ] Observers and AppContext | Mark |
+| Ashry | [x] DonationService and lifecycle | [x] Observers and AppContext | Mark |
 | Jana | [x] Users and login | [x] Lookup CRUD | Wael |
 
 ## Final check (all six)
@@ -37,6 +37,8 @@ Details are in [phase1-tasks.md](phase1-tasks.md).
 | Task | Owner | Test / command | Result |
 | --- | --- | --- | --- |
 | Setup compiles | Jana | `mvn test` (no tests yet) | Passed (2026-10-29) |
+| `SetupCheckTest` | Jana | `mvn test` or run in IntelliJ | Not run yet |
+| Observer, lifecycle, expiry, wiring | Ashry | `DonationServiceTest`, `ExpirySchedulerTest`, `ObserversTest`, `AppConfigTest` (32 tests, mocks) | Passed (2026-11-02) |
 | `SetupCheckTest` | Jana | `javac` + JUnit directly (not `mvn test`), JDK 27 | Passed, 2 of 2 (2026-10-30) |
 | Users and login | Jana | `UserTest`, `UserRepositoryTest`, `AuthServiceTest`, `javac` + JUnit directly, JDK 27 | Passed, 18 of 18 (2026-10-30) |
 | Lookup CRUD | Jana | `LookupRepositoryTest`, `javac` + JUnit directly, JDK 27 | Passed, 13 of 13 (2026-10-30) |
