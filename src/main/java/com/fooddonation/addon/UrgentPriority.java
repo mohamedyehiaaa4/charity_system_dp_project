@@ -2,6 +2,11 @@ package com.fooddonation.addon;
 
 import com.fooddonation.model.donation.Donation;
 
+/**
+ * DECORATOR PATTERN - Concrete Decorator.
+ * Adds "urgent priority": the donation is urgent or near expiry, so it moves to the top of the list.
+ * Priority bonus: +5
+ */
 public class UrgentPriority extends DonationDecorator {
 
     public UrgentPriority(Donation wrapped) {
@@ -15,11 +20,13 @@ public class UrgentPriority extends DonationDecorator {
 
     @Override
     public String getDescription() {
-        throw new UnsupportedOperationException("TODO");
+        // the wrapped donation's text, plus our service
+        return wrapped.getDescription() + " + Urgent priority";
     }
 
     @Override
     public int getPriority() {
-        throw new UnsupportedOperationException("TODO");
+        // the wrapped donation's priority, plus our bonus
+        return wrapped.getPriority() + 5;
     }
 }

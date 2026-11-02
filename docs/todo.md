@@ -21,7 +21,7 @@ Details are in [phase1-tasks.md](phase1-tasks.md).
 | --- | --- | --- | --- |
 | Ezz | [ ] Donation types | [ ] DonationFactory | Resha |
 | Resha | [ ] Decorator base | [ ] Four wrappers | Ezz |
-| Wael | [ ] DatabaseConnection | [ ] DonationRepository | Jana |
+| Wael | [x] DatabaseConnection | [x] DonationRepository | Jana |
 | Mark | [ ] NotificationService | [ ] Three channels | Ashry |
 | Ashry | [ ] DonationService and lifecycle | [ ] Observers and AppContext | Mark |
 | Jana | [x] Users and login | [x] Lookup CRUD | Wael |
@@ -40,3 +40,6 @@ Details are in [phase1-tasks.md](phase1-tasks.md).
 | `SetupCheckTest` | Jana | `javac` + JUnit directly (not `mvn test`), JDK 27 | Passed, 2 of 2 (2026-10-30) |
 | Users and login | Jana | `UserTest`, `UserRepositoryTest`, `AuthServiceTest`, `javac` + JUnit directly, JDK 27 | Passed, 18 of 18 (2026-10-30) |
 | Lookup CRUD | Jana | `LookupRepositoryTest`, `javac` + JUnit directly, JDK 27 | Passed, 13 of 13 (2026-10-30) |
+| `SetupCheckTest` | Jana | `mvn test` or run in IntelliJ | Passed on Wael's machine (2026-10-31) |
+| `DatabaseConnection` | Wael | `DatabaseConnectionTest` (6 tests) | Passed (2026-10-31) |
+| `DonationRepository` | Wael | `DonationRepositoryTest` (10 tests, factory and decorator mocked) | Passed (2026-10-31) |

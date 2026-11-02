@@ -4,3 +4,5 @@ logs/
 .idea/
 .vscode/
 *.iml
+/tasks/
+/src/test/java/com/fooddonation/model/donation/

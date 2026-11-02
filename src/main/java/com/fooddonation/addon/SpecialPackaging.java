@@ -2,6 +2,11 @@ package com.fooddonation.addon;
 
 import com.fooddonation.model.donation.Donation;
 
+/**
+ * DECORATOR PATTERN - Concrete Decorator.
+ * Adds "special packaging": special containers or labels are needed.
+ * Priority bonus: +0 (it changes the description only)
+ */
 public class SpecialPackaging extends DonationDecorator {
 
     public SpecialPackaging(Donation wrapped) {
@@ -15,11 +20,13 @@ public class SpecialPackaging extends DonationDecorator {
 
     @Override
     public String getDescription() {
-        throw new UnsupportedOperationException("TODO");
+        // the wrapped donation's text, plus our service
+        return wrapped.getDescription() + " + Special packaging";
     }
 
     @Override
     public int getPriority() {
-        throw new UnsupportedOperationException("TODO");
+        // no bonus: packaging does not make a donation more urgent
+        return wrapped.getPriority() + 0;
     }
 }
