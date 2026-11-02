@@ -4,15 +4,22 @@ import com.fooddonation.addon.AddOn;
 import com.fooddonation.event.DonationEvent;
 import com.fooddonation.event.DonationObserver;
 import com.fooddonation.event.DonationSubject;
+import com.fooddonation.event.EventType;
+import com.fooddonation.event.MessageTemplates;
 import com.fooddonation.model.donation.Donation;
 import com.fooddonation.model.donation.DonationFactory;
 import com.fooddonation.model.donation.DonationRequest;
+import com.fooddonation.model.lookup.DonationStatus;
+import com.fooddonation.model.lookup.LookupType;
+import com.fooddonation.model.user.Donor;
+import com.fooddonation.model.user.Role;
 import com.fooddonation.model.user.User;
 import com.fooddonation.persistence.DonationRepository;
 import com.fooddonation.persistence.LookupRepository;
 import com.fooddonation.persistence.UserRepository;
 
 import java.time.Clock;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -66,35 +73,89 @@ public class DonationService implements DonationSubject {
         }
     }
 
+    /** Creates the donation as the caller's own, saves it as Submitted, then fires DONATION_SUBMITTED. */
     public Donation submitDonation(User caller, DonationRequest request, Set<AddOn> addOns) {
-        throw new UnsupportedOperationException("TODO");
+        if (!(caller instanceof Donor donor)) {
+            throw new SecurityException("Only donors can submit donations");
+        }
+        if (request == null) {
+            throw new IllegalArgumentException("Donation request is required");
+        }
+        // a donor can only donate as themselves
+        request.setDonor(donor);
+        Donation donation = factory.applyAddOns(factory.createDonation(request), addOns);
+        donation.setStatus(status(DonationStatus.SUBMITTED));
+        donation.setCreatedAt(LocalDateTime.now(clock));
+        Donation saved = donations.save(donation);
+        fire(EventType.DONATION_SUBMITTED, saved);
+        return saved;
     }
 
     public List<Donation> getMyDonations(User caller) {
-        throw new UnsupportedOperationException("TODO");
+        if (caller == null) {
+            throw new SecurityException("Login required");
+        }
+        return donations.findByDonor(caller.getId());
     }
 
     public List<Donation> getAllDonations(User caller) {
-        throw new UnsupportedOperationException("TODO");
+        requireCoordinator(caller);
+        return donations.findAll();
     }
 
     public void approve(User caller, long id) {
-        throw new UnsupportedOperationException("TODO");
+        changeStatus(caller, id, DonationStatus.SUBMITTED, DonationStatus.APPROVED, null);
     }
 
     public void reject(User caller, long id, String reason) {
-        throw new UnsupportedOperationException("TODO");
+        if (reason == null || reason.isBlank()) {
+            throw new IllegalArgumentException("A reason is required to reject a donation");
+        }
+        changeStatus(caller, id, DonationStatus.SUBMITTED, DonationStatus.REJECTED, reason.trim());
     }
 
     public void markPickedUp(User caller, long id) {
-        throw new UnsupportedOperationException("TODO");
+        changeStatus(caller, id, DonationStatus.APPROVED, DonationStatus.PICKED_UP, null);
     }
 
     public void markDelivered(User caller, long id) {
-        throw new UnsupportedOperationException("TODO");
+        changeStatus(caller, id, DonationStatus.PICKED_UP, DonationStatus.DELIVERED, null);
     }
 
     public List<Donation> checkExpiringDonations() {
         throw new UnsupportedOperationException("TODO");
+    }
+
+    // The whole lifecycle: each move is only allowed from one status, so final statuses can't change.
+    private void changeStatus(User caller, long id, String from, String to, String reason) {
+        requireCoordinator(caller);
+        Donation donation = donations.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("No donation with id " + id));
+        String current = donation.getStatus() == null ? null : donation.getStatus().getName();
+        if (!from.equals(current)) {
+            throw new IllegalStateException("Can't move donation " + id + " from " + current + " to " + to);
+        }
+        DonationStatus next = status(to);
+        donations.updateStatus(id, next, reason);
+        // the repository only updates the database, so keep our copy in step before telling anyone
+        donation.setStatus(next);
+        donation.setRejectionReason(reason);
+        fire(to.equals(DonationStatus.REJECTED) ? EventType.DONATION_REJECTED : EventType.STATUS_CHANGED, donation);
+    }
+
+    private DonationStatus status(String name) {
+        return (DonationStatus) lookups.findByName(LookupType.DONATION_STATUS, name)
+                .orElseThrow(() -> new IllegalStateException("Missing system status " + name));
+    }
+
+    private void fire(EventType type, Donation donation) {
+        notifyObservers(new DonationEvent(type, donation, MessageTemplates.message(type, donation),
+                LocalDateTime.now(clock)));
+    }
+
+    private static void requireCoordinator(User caller) {
+        if (caller == null || caller.getRole() != Role.COORDINATOR) {
+            throw new SecurityException("Only coordinators can do this");
+        }
     }
 }
