@@ -9,6 +9,7 @@ import com.fooddonation.event.MessageTemplates;
 import com.fooddonation.model.donation.Donation;
 import com.fooddonation.model.donation.DonationFactory;
 import com.fooddonation.model.donation.DonationRequest;
+import com.fooddonation.model.donation.DonationType;
 import com.fooddonation.model.lookup.DonationStatus;
 import com.fooddonation.model.lookup.LookupType;
 import com.fooddonation.model.user.Donor;
@@ -19,9 +20,12 @@ import com.fooddonation.persistence.LookupRepository;
 import com.fooddonation.persistence.UserRepository;
 
 import java.time.Clock;
+import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
@@ -34,11 +38,21 @@ public class DonationService implements DonationSubject {
     private final LookupRepository lookups;
     private final UserRepository users;
     private final Clock clock;
+    private final Duration warningWindow;
+    // donations already warned about in this program run, so each one is warned only once
+    private final Set<Long> warned = ConcurrentHashMap.newKeySet();
     // copy-on-write so the expiry scheduler thread can notify while observers are attached
     private final List<DonationObserver> observers = new CopyOnWriteArrayList<>();
 
     public DonationService(DonationFactory factory, DonationRepository donations, LookupRepository lookups,
                            UserRepository users, Clock clock) {
+        this(factory, donations, lookups, users, clock, Duration.ofHours(48));
+    }
+
+    /** @param warningWindow how long before expiry a donation counts as near expiry */
+    public DonationService(DonationFactory factory, DonationRepository donations, LookupRepository lookups,
+                           UserRepository users, Clock clock, Duration warningWindow) {
+        this.warningWindow = warningWindow;
         this.factory = factory;
         this.donations = donations;
         this.lookups = lookups;
@@ -122,8 +136,21 @@ public class DonationService implements DonationSubject {
         changeStatus(caller, id, DonationStatus.PICKED_UP, DonationStatus.DELIVERED, null);
     }
 
+    /**
+     * Fires NEAR_EXPIRY for active food donations that expire within the warning window
+     * and haven't been warned about yet. Returns the donations warned about in this call.
+     * The clock's time zone decides when a day ends.
+     */
     public List<Donation> checkExpiringDonations() {
-        throw new UnsupportedOperationException("TODO");
+        LocalDateTime now = LocalDateTime.now(clock);
+        List<Donation> newlyWarned = new ArrayList<>();
+        for (Donation donation : donations.findAll()) {
+            if (isNearExpiry(donation, now) && warned.add(donation.getId())) {
+                newlyWarned.add(donation);
+                fire(EventType.NEAR_EXPIRY, donation);
+            }
+        }
+        return newlyWarned;
     }
 
     // The whole lifecycle: each move is only allowed from one status, so final statuses can't change.
@@ -141,6 +168,19 @@ public class DonationService implements DonationSubject {
         donation.setStatus(next);
         donation.setRejectionReason(reason);
         fire(to.equals(DonationStatus.REJECTED) ? EventType.DONATION_REJECTED : EventType.STATUS_CHANGED, donation);
+    }
+
+    private boolean isNearExpiry(Donation donation, LocalDateTime now) {
+        if (donation.getType() == DonationType.MONEY || donation.getExpiry() == null || donation.getStatus() == null) {
+            return false;
+        }
+        String status = donation.getStatus().getName();
+        if (DonationStatus.REJECTED.equals(status) || DonationStatus.DELIVERED.equals(status)) {
+            return false;
+        }
+        // food is good until the end of its expiry day
+        LocalDateTime expiresAt = donation.getExpiry().plusDays(1).atStartOfDay();
+        return now.isBefore(expiresAt) && !expiresAt.isAfter(now.plus(warningWindow));
     }
 
     private DonationStatus status(String name) {

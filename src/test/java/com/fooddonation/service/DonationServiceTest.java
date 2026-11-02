@@ -30,6 +30,7 @@ import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -287,5 +288,48 @@ class DonationServiceTest {
         doThrow(new IllegalStateException("db down")).when(donations).updateStatus(anyLong(), any(), any());
         assertThrows(IllegalStateException.class, () -> service.approve(coordinator, 1));
         verify(observer, never()).update(any());
+    }
+
+    // --- expiry (the fake clock says 2026-11-02 12:00 in Cairo) ---
+
+    Donation food(long id, String status, LocalDate expiry) {
+        Donation donation = stored(id, status);
+        donation.setExpiry(expiry);
+        return donation;
+    }
+
+    @Test
+    void warnsAboutFoodExpiringWithin48Hours() {
+        Donation today = food(1, DonationStatus.APPROVED, LocalDate.of(2026, 11, 2));
+        Donation tomorrow = food(2, DonationStatus.SUBMITTED, LocalDate.of(2026, 11, 3));
+        Donation later = food(3, DonationStatus.SUBMITTED, LocalDate.of(2026, 11, 4)); // ends 60h from now
+        when(donations.findAll()).thenReturn(List.of(today, tomorrow, later));
+
+        assertEquals(List.of(today, tomorrow), service.checkExpiringDonations());
+        verify(observer, times(2)).update(any());
+    }
+
+    @Test
+    void skipsMoneyFinishedAndExpiredDonations() {
+        Donation money = stored(1, DonationStatus.APPROVED);
+        money.setType(DonationType.MONEY);
+        money.setExpiry(null);
+        Donation rejected = food(2, DonationStatus.REJECTED, LocalDate.of(2026, 11, 3));
+        Donation delivered = food(3, DonationStatus.DELIVERED, LocalDate.of(2026, 11, 3));
+        Donation expired = food(4, DonationStatus.APPROVED, LocalDate.of(2026, 11, 1));
+        when(donations.findAll()).thenReturn(List.of(money, rejected, delivered, expired));
+
+        assertTrue(service.checkExpiringDonations().isEmpty());
+        verify(observer, never()).update(any());
+    }
+
+    @Test
+    void warnsOnlyOncePerDonation() {
+        Donation soon = food(1, DonationStatus.APPROVED, LocalDate.of(2026, 11, 3));
+        when(donations.findAll()).thenReturn(List.of(soon));
+
+        service.checkExpiringDonations();
+        assertTrue(service.checkExpiringDonations().isEmpty());
+        assertEquals(EventType.NEAR_EXPIRY, lastEvent().getType());
     }
 }
