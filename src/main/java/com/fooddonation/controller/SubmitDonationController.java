@@ -1,6 +1,6 @@
 package com.fooddonation.controller;
 
-import com.fooddonation.addon.AddOn;
+import com.fooddonation.model.donation.addon.AddOn;
 import com.fooddonation.model.donation.Donation;
 import com.fooddonation.model.donation.DonationRequest;
 import com.fooddonation.model.donation.DonationType;

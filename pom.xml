@@ -71,7 +71,7 @@
         <artifactId>javafx-maven-plugin</artifactId>
         <version>0.0.8</version>
         <configuration>
-          <mainClass>com.fooddonation.ui.Launcher</mainClass>
+          <mainClass>com.fooddonation.app.Launcher</mainClass>
         </configuration>
       </plugin>
     </plugins>

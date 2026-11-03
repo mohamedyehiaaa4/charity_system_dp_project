@@ -1,8 +1,8 @@
 package com.fooddonation.service;
 
-import com.fooddonation.event.DonationEvent;
-import com.fooddonation.event.DonationObserver;
-import com.fooddonation.event.EventType;
+import com.fooddonation.service.donationevent.DonationEvent;
+import com.fooddonation.service.donationevent.DonationObserver;
+import com.fooddonation.service.donationevent.EventType;
 import com.fooddonation.model.donation.Donation;
 import com.fooddonation.model.donation.DonationFactory;
 import com.fooddonation.model.donation.DonationRequest;

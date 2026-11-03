@@ -1,7 +1,7 @@
 package com.fooddonation.persistence;
 
-import com.fooddonation.addon.AddOn;
-import com.fooddonation.addon.DonationDecorator;
+import com.fooddonation.model.donation.addon.AddOn;
+import com.fooddonation.model.donation.addon.DonationDecorator;
 import com.fooddonation.model.donation.Donation;
 import com.fooddonation.model.donation.DonationFactory;
 import com.fooddonation.model.donation.DonationRequest;

@@ -4,8 +4,8 @@ Food donation system for CSE336 (Software Design Patterns).
 
 - Needs JDK 17 or 21 and Maven 3.9+
 - Build and test: `mvn test`
-- Start the GUI: `mvn javafx:run`, or run `com.fooddonation.ui.Launcher` in IntelliJ. Sign in with `coordinator@fooddonation.org`, or register a donor
-- Plan and tasks: [docs/plan.md](docs/plan.md), [docs/phase1-tasks.md](docs/phase1-tasks.md)
+- Start the GUI: `mvn javafx:run`, or run `com.fooddonation.app.Launcher` in IntelliJ. Sign in with `coordinator@fooddonation.org`, or register a donor
+- Docs: [requirements](docs/requirements/), [Phase 1 decisions](docs/phase1/contracts.md), [class diagrams](docs/diagrams/)
 
 ## Design patterns
 
@@ -14,24 +14,24 @@ Packages are named by what the code does. This is where each pattern lives:
 | Pattern | Where |
 | --- | --- |
 | Factory | `model/donation/DonationFactory` |
-| Decorator | `addon/` (`DonationDecorator` and the four add-on wrappers) |
+| Decorator | `model/donation/addon/` (`DonationDecorator` and the four add-on wrappers) |
 | Singleton | `persistence/DatabaseConnection` |
-| Observer | `event/` + `service/DonationService` (the subject) |
+| Observer | `service/donationevent/` + `service/DonationService` (the subject) |
 | Strategy | `notification/` (`NotificationStrategy`, `NotificationService`) |
 
 ## Packages
 
 | Package | Contents |
 | --- | --- |
-| `model.donation`, `model.user`, `model.lookup` | Data classes (the Model in MVC) |
-| `addon` | Optional donation services |
+| `app` | Start-up and wiring: `Launcher`, `FoodDonationApp`, `AppContext`, `AppConfig`, `ControllerFactory` |
+| `model.donation`, `model.user`, `model.lookup`, `model.receipt` | Data classes (the Model in MVC) |
+| `model.donation.addon` | Optional donation services |
+| `service` | Business logic (`DonationService`, `AuthService`, `ReceiptService`, `ExpiryScheduler`) |
+| `service.donationevent` | Donation events and observers |
 | `notification` | Notification channels |
-| `event` | Donation events and observers |
-| `service` | Business logic (`DonationService`, `AuthService`, `ExpiryScheduler`) |
 | `persistence` | Database connection and repositories |
-| `app` | Wiring the model together (`AppContext`) |
 | `controller` | One JavaFX controller per view (the Controller in MVC) |
-| `ui` | GUI start-up and wiring: `Launcher`, `FoodDonationApp`, `Navigator`, `ControllerFactory`, `Session` |
+| `ui` | GUI helpers: `Navigator`, `Session`, `View`, `Formats`, `Controls` |
 | `resources/com/fooddonation/view` | FXML views and `styles.css` (the View in MVC) |
 
 ## GUI

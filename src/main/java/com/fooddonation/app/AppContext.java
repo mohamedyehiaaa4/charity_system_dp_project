@@ -1,9 +1,9 @@
 package com.fooddonation.app;
 
-import com.fooddonation.event.CoordinatorDashboardObserver;
-import com.fooddonation.event.DonorNotificationObserver;
-import com.fooddonation.event.ReceiptObserver;
-import com.fooddonation.event.VolunteerNotificationObserver;
+import com.fooddonation.service.donationevent.CoordinatorDashboardObserver;
+import com.fooddonation.service.donationevent.DonorNotificationObserver;
+import com.fooddonation.service.donationevent.ReceiptObserver;
+import com.fooddonation.service.donationevent.VolunteerNotificationObserver;
 import com.fooddonation.model.donation.DonationFactory;
 import com.fooddonation.notification.ChannelType;
 import com.fooddonation.notification.EmailNotification;

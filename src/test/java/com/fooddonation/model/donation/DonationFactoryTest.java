@@ -1,10 +1,10 @@
 package com.fooddonation.model.donation;
 
-import com.fooddonation.addon.AddOn;
-import com.fooddonation.addon.DonationDecorator;
-import com.fooddonation.addon.RefrigeratedTransport;
-import com.fooddonation.addon.SpecialPackaging;
-import com.fooddonation.addon.UrgentPriority;
+import com.fooddonation.model.donation.addon.AddOn;
+import com.fooddonation.model.donation.addon.DonationDecorator;
+import com.fooddonation.model.donation.addon.RefrigeratedTransport;
+import com.fooddonation.model.donation.addon.SpecialPackaging;
+import com.fooddonation.model.donation.addon.UrgentPriority;
 import com.fooddonation.model.lookup.DonationStatus;
 import com.fooddonation.model.lookup.FoodCategory;
 import com.fooddonation.model.lookup.StorageType;
