@@ -1,7 +1,5 @@
 package com.fooddonation.controller;
 
-import com.fooddonation.ui.Navigator;
-import com.fooddonation.ui.Session;
 import javafx.fxml.FXML;
 import javafx.scene.control.Tab;
 

@@ -1,8 +1,7 @@
 package com.fooddonation.controller;
 
 import com.fooddonation.model.user.User;
-import com.fooddonation.ui.Controls;
-import com.fooddonation.ui.Session;
+import com.fooddonation.view.Controls;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;

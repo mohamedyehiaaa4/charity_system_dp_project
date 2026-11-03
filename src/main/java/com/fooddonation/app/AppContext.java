@@ -18,6 +18,7 @@ import com.fooddonation.persistence.UserRepository;
 import com.fooddonation.service.AuthService;
 import com.fooddonation.service.DonationService;
 import com.fooddonation.service.ExpiryScheduler;
+import com.fooddonation.service.LookupService;
 import com.fooddonation.service.ReceiptService;
 
 import java.time.Clock;
@@ -37,6 +38,7 @@ public class AppContext implements AutoCloseable {
     private final NotificationService notifications;
     private final DonationService donationService;
     private final ReceiptService receipts;
+    private final LookupService lookupService;
     private final ExpiryScheduler scheduler;
     private final DonationFactory factory;
 
@@ -60,6 +62,7 @@ public class AppContext implements AutoCloseable {
         donationService = new DonationService(factory, donations, lookups, users,
                 clock, config.expiryWarningWindow());
         receipts = new ReceiptService(donations, clock);
+        lookupService = new LookupService(lookups);
         // observers are attached once, here
         donationService.attach(new CoordinatorDashboardObserver(notifications, users, config.coordinatorEmail()));
         donationService.attach(new DonorNotificationObserver(notifications));
@@ -115,6 +118,10 @@ public class AppContext implements AutoCloseable {
 
     public ReceiptService getReceipts() {
         return receipts;
+    }
+
+    public LookupService getLookupService() {
+        return lookupService;
     }
 
     public ExpiryScheduler getScheduler() {

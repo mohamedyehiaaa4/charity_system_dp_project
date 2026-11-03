@@ -2,9 +2,8 @@ package com.fooddonation.controller;
 
 import com.fooddonation.notification.InAppInbox;
 import com.fooddonation.notification.InboxMessage;
-import com.fooddonation.ui.Controls;
-import com.fooddonation.ui.Formats;
-import com.fooddonation.ui.Session;
+import com.fooddonation.view.Controls;
+import com.fooddonation.view.Formats;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;

@@ -1,8 +1,6 @@
 package com.fooddonation.controller;
 
-import com.fooddonation.ui.Navigator;
-import com.fooddonation.ui.Session;
-import com.fooddonation.ui.View;
+import com.fooddonation.view.View;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;

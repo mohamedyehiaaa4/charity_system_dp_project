@@ -1,4 +1,4 @@
-package com.fooddonation.ui;
+package com.fooddonation.view;
 
 import com.fooddonation.model.donation.addon.AddOn;
 import com.fooddonation.model.donation.Donation;

@@ -1,5 +1,6 @@
-package com.fooddonation.ui;
+package com.fooddonation.controller;
 
+import com.fooddonation.view.View;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;

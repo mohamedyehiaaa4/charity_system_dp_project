@@ -9,11 +9,10 @@ import com.fooddonation.model.donation.addon.AddOn;
 import com.fooddonation.model.lookup.FoodCategory;
 import com.fooddonation.model.lookup.LookupType;
 import com.fooddonation.model.lookup.StorageType;
-import com.fooddonation.persistence.LookupRepository;
 import com.fooddonation.service.DonationService;
-import com.fooddonation.ui.Controls;
-import com.fooddonation.ui.Formats;
-import com.fooddonation.ui.Session;
+import com.fooddonation.service.LookupService;
+import com.fooddonation.view.Controls;
+import com.fooddonation.view.Formats;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -59,7 +58,7 @@ public class SubmitDonationController implements Refreshable {
 
     private final DonationService donations;
     private final DonationFactory factory;
-    private final LookupRepository lookups;
+    private final LookupService lookups;
     private final Session session;
     private Runnable onSubmitted = () -> { };
 
@@ -106,7 +105,7 @@ public class SubmitDonationController implements Refreshable {
     @FXML private Button submitButton;
     @FXML private Label message;
 
-    public SubmitDonationController(DonationService donations, DonationFactory factory, LookupRepository lookups,
+    public SubmitDonationController(DonationService donations, DonationFactory factory, LookupService lookups,
                                     Session session) {
         this.donations = donations;
         this.factory = factory;
@@ -176,9 +175,9 @@ public class SubmitDonationController implements Refreshable {
     public void refresh() {
         FoodCategory category = categoryBox.getValue();
         StorageType storage = storageBox.getValue();
-        categoryBox.getItems().setAll(lookups.readAll(LookupType.FOOD_CATEGORY).stream()
+        categoryBox.getItems().setAll(lookups.getAll(LookupType.FOOD_CATEGORY).stream()
                 .map(FoodCategory.class::cast).toList());
-        storageBox.getItems().setAll(lookups.readAll(LookupType.STORAGE_TYPE).stream()
+        storageBox.getItems().setAll(lookups.getAll(LookupType.STORAGE_TYPE).stream()
                 .map(StorageType.class::cast).toList());
         categoryBox.setValue(category == null ? null : categoryBox.getItems().stream()
                 .filter(c -> c.getId() == category.getId()).findFirst().orElse(null));

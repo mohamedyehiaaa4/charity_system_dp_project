@@ -1,4 +1,4 @@
-package com.fooddonation.ui;
+package com.fooddonation.view;
 
 /** The top-level screens. Each one is an FXML file in resources/com/fooddonation/view. */
 public enum View {

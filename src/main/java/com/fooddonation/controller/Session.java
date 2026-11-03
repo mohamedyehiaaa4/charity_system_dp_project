@@ -1,4 +1,4 @@
-package com.fooddonation.ui;
+package com.fooddonation.controller;
 
 import com.fooddonation.model.user.User;
 

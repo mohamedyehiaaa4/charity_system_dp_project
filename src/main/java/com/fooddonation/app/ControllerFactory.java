@@ -7,12 +7,12 @@ import com.fooddonation.controller.LoginController;
 import com.fooddonation.controller.LookupTablesController;
 import com.fooddonation.controller.MessageLogController;
 import com.fooddonation.controller.MyDonationsController;
+import com.fooddonation.controller.Navigator;
 import com.fooddonation.controller.ProfileController;
 import com.fooddonation.controller.RegisterController;
 import com.fooddonation.controller.ReviewDonationsController;
+import com.fooddonation.controller.Session;
 import com.fooddonation.controller.SubmitDonationController;
-import com.fooddonation.ui.Navigator;
-import com.fooddonation.ui.Session;
 import javafx.util.Callback;
 
 import java.util.HashMap;
@@ -33,7 +33,7 @@ public class ControllerFactory implements Callback<Class<?>, Object> {
         controllers.put(DonorPanelController.class, () -> new DonorPanelController(session, navigator));
         controllers.put(SubmitDonationController.class,
                 () -> new SubmitDonationController(app.getDonationService(), app.getFactory(),
-                        app.getLookups(), session));
+                        app.getLookupService(), session));
         controllers.put(MyDonationsController.class,
                 () -> new MyDonationsController(app.getDonationService(), app.getReceipts(), session));
         controllers.put(ProfileController.class, () -> new ProfileController(app.getAuth(), session));
@@ -42,7 +42,8 @@ public class ControllerFactory implements Callback<Class<?>, Object> {
         controllers.put(CoordinatorPanelController.class, () -> new CoordinatorPanelController(session, navigator));
         controllers.put(ReviewDonationsController.class,
                 () -> new ReviewDonationsController(app.getDonationService(), app.getReceipts(), session));
-        controllers.put(LookupTablesController.class, () -> new LookupTablesController(app.getLookups(), session));
+        controllers.put(LookupTablesController.class,
+                () -> new LookupTablesController(app.getLookupService(), session));
         controllers.put(MessageLogController.class,
                 () -> new MessageLogController(config.emailLog(), config.smsLog(), session));
     }

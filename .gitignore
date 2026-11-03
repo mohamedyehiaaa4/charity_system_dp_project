@@ -5,3 +5,7 @@ logs/
 .vscode/
 *.iml
 /tasks/
+
+# LaTeX build files
+docs/srs/*
+docs/report/*

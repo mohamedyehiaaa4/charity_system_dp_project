@@ -2,10 +2,9 @@ package com.fooddonation.controller;
 
 import com.fooddonation.model.lookup.LookupEntry;
 import com.fooddonation.model.lookup.LookupType;
-import com.fooddonation.persistence.LookupRepository;
-import com.fooddonation.ui.Controls;
-import com.fooddonation.ui.Formats;
-import com.fooddonation.ui.Session;
+import com.fooddonation.service.LookupService;
+import com.fooddonation.view.Controls;
+import com.fooddonation.view.Formats;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
@@ -19,7 +18,7 @@ import javafx.scene.control.TextField;
  * Donation statuses are not shown: the five lifecycle statuses are fixed (protected system rows).
  */
 public class LookupTablesController implements Refreshable {
-    private final LookupRepository lookups;
+    private final LookupService lookups;
     private final Session session;
 
     @FXML private ComboBox<LookupType> typeBox;
@@ -30,7 +29,7 @@ public class LookupTablesController implements Refreshable {
     @FXML private Button deleteButton;
     @FXML private Label message;
 
-    public LookupTablesController(LookupRepository lookups, Session session) {
+    public LookupTablesController(LookupService lookups, Session session) {
         this.lookups = lookups;
         this.session = session;
     }
@@ -55,7 +54,7 @@ public class LookupTablesController implements Refreshable {
 
     @Override
     public void refresh() {
-        table.getItems().setAll(lookups.readAll(typeBox.getValue()));
+        table.getItems().setAll(lookups.getAll(typeBox.getValue()));
     }
 
     @FXML
@@ -74,7 +73,7 @@ public class LookupTablesController implements Refreshable {
     private void rename() {
         LookupEntry selected = table.getSelectionModel().getSelectedItem();
         try {
-            lookups.update(session.getUser(), typeBox.getValue(), selected.getId(), nameField.getText());
+            lookups.rename(session.getUser(), typeBox.getValue(), selected.getId(), nameField.getText());
             Controls.ok(message, "Renamed to \"" + nameField.getText().trim() + "\".");
             refresh();
         } catch (IllegalArgumentException | IllegalStateException | SecurityException e) {

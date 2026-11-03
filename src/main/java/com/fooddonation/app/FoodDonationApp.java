@@ -1,8 +1,8 @@
 package com.fooddonation.app;
 
-import com.fooddonation.ui.Navigator;
-import com.fooddonation.ui.Session;
-import com.fooddonation.ui.View;
+import com.fooddonation.controller.Navigator;
+import com.fooddonation.controller.Session;
+import com.fooddonation.view.View;
 import javafx.application.Application;
 import javafx.stage.Stage;
 

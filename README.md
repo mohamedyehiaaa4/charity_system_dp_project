@@ -21,18 +21,20 @@ Packages are named by what the code does. This is where each pattern lives:
 
 ## Packages
 
-| Package | Contents |
-| --- | --- |
-| `app` | Start-up and wiring: `Launcher`, `FoodDonationApp`, `AppContext`, `AppConfig`, `ControllerFactory` |
-| `model.donation`, `model.user`, `model.lookup`, `model.receipt` | Data classes (the Model in MVC) |
-| `model.donation.addon` | Optional donation services |
-| `service` | Business logic (`DonationService`, `AuthService`, `ReceiptService`, `ExpiryScheduler`) |
-| `service.donationevent` | Donation events and observers |
-| `notification` | Notification channels |
-| `persistence` | Database connection and repositories |
-| `controller` | One JavaFX controller per view (the Controller in MVC) |
-| `ui` | GUI helpers: `Navigator`, `Session`, `View`, `Formats`, `Controls` |
-| `resources/com/fooddonation/view` | FXML views and `styles.css` (the View in MVC) |
+| Package | MVC role | Contents |
+| --- | --- | --- |
+| `app` | (wiring) | Start-up and wiring: `Launcher`, `FoodDonationApp`, `AppContext`, `AppConfig`, `ControllerFactory` |
+| `model.donation`, `model.user`, `model.lookup`, `model.receipt` | Model | Domain objects |
+| `model.donation.addon` | Model | Optional donation services |
+| `service` | Model | Business logic (`DonationService`, `AuthService`, `ReceiptService`, `LookupService`, `ExpiryScheduler`) |
+| `service.donationevent` | Model | Donation events and observers |
+| `notification` | Model | Notification channels |
+| `persistence` | Model | Database connection and repositories |
+| `controller` | Controller | One JavaFX controller per view, plus `Navigator` (switches screens) and `Session` (who is signed in) |
+| `view` | View | View helpers: `View` (the screen list), `Formats`, `Controls` |
+| `resources/com/fooddonation/view` | View | FXML views and `styles.css` |
+
+The Model is everything that runs without the GUI, so it covers four packages, not only `model`. They are split by layer: domain objects (`model`), business logic (`service`), storage (`persistence`) and outgoing messages (`notification`). None of them imports JavaFX.
 
 ## GUI
 

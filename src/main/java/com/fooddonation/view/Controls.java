@@ -1,4 +1,4 @@
-package com.fooddonation.ui;
+package com.fooddonation.view;
 
 import javafx.geometry.Pos;
 import javafx.scene.Node;
