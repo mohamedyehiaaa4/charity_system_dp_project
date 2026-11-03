@@ -54,7 +54,10 @@ public class AuthService {
         if (emailOwner.isPresent() && emailOwner.get().getId() != user.getId()) {
             throw new IllegalArgumentException("Email is already registered: " + cleanEmail);
         }
-
+        if (user.getPreferredChannel() == ChannelType.SMS
+                && (user.getPhone() == null || user.getPhone().isBlank())) {
+            throw new IllegalArgumentException("Add a phone number to receive SMS");
+        }
         if (user instanceof Donor donor) {
             requireText(donor.getPhone(), "Phone");
             requireText(donor.getAddress(), "Address");

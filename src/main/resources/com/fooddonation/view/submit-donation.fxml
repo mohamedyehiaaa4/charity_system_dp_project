@@ -6,87 +6,181 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TextField?>
-<?import javafx.scene.layout.ColumnConstraints?>
-<?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-<ScrollPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
-            fx:controller="com.fooddonation.controller.SubmitDonationController" fitToWidth="true">
-    <VBox styleClass="page" spacing="16" maxWidth="760">
-        <GridPane styleClass="form" hgap="12" vgap="10">
-            <columnConstraints>
-                <ColumnConstraints minWidth="150"/>
-                <ColumnConstraints hgrow="ALWAYS"/>
-            </columnConstraints>
-            <Label text="Donation type" GridPane.rowIndex="0"/>
-            <ComboBox fx:id="typeBox" maxWidth="Infinity" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
-        </GridPane>
-
-        <!-- shown for the four food types (DON-2, DON-3) -->
-        <VBox fx:id="foodFields" spacing="16">
-            <Label text="Food" styleClass="section"/>
-            <GridPane styleClass="form" hgap="12" vgap="10">
-                <columnConstraints>
-                    <ColumnConstraints minWidth="150"/>
-                    <ColumnConstraints hgrow="ALWAYS"/>
-                </columnConstraints>
-                <Label text="Food name" GridPane.rowIndex="0"/>
-                <TextField fx:id="foodNameField" promptText="e.g. Rice and chicken" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
-                <Label text="Quantity" GridPane.rowIndex="1"/>
-                <HBox spacing="8" GridPane.rowIndex="1" GridPane.columnIndex="1">
-                    <TextField fx:id="quantityField" promptText="5" HBox.hgrow="ALWAYS"/>
-                    <ComboBox fx:id="unitBox" prefWidth="140"/>
-                </HBox>
-                <Label text="Category" GridPane.rowIndex="2"/>
-                <ComboBox fx:id="categoryBox" promptText="Choose a category" maxWidth="Infinity" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
-                <Label text="Storage" GridPane.rowIndex="3"/>
-                <ComboBox fx:id="storageBox" promptText="Choose a storage type" maxWidth="Infinity" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
-                <Label text="Expiry / best before" GridPane.rowIndex="4"/>
-                <DatePicker fx:id="expiryPicker" maxWidth="Infinity" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
-            </GridPane>
-
-            <Label text="Pickup" styleClass="section"/>
-            <GridPane styleClass="form" hgap="12" vgap="10">
-                <columnConstraints>
-                    <ColumnConstraints minWidth="150"/>
-                    <ColumnConstraints hgrow="ALWAYS"/>
-                </columnConstraints>
-                <Label text="Day" GridPane.rowIndex="0"/>
-                <DatePicker fx:id="pickupDatePicker" maxWidth="Infinity" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
-                <Label text="Between" GridPane.rowIndex="1"/>
-                <HBox spacing="8" alignment="CENTER_LEFT" GridPane.rowIndex="1" GridPane.columnIndex="1">
-                    <TextField fx:id="pickupFromField" promptText="10:00" prefWidth="90"/>
-                    <Label text="and"/>
-                    <TextField fx:id="pickupToField" promptText="12:00" prefWidth="90"/>
-                </HBox>
-                <Label text="Address" GridPane.rowIndex="2"/>
-                <TextField fx:id="pickupAddressField" promptText="Leave empty to use the address in your profile" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
-            </GridPane>
-
-            <Label text="Extra services" styleClass="section"/>
-            <FlowPane fx:id="addOnBox" hgap="18" vgap="8"/>
-        </VBox>
-
-        <!-- shown for money donations (DON-9) -->
-        <VBox fx:id="moneyFields" spacing="16">
-            <Label text="Money" styleClass="section"/>
-            <GridPane styleClass="form" hgap="12" vgap="10">
-                <columnConstraints>
-                    <ColumnConstraints minWidth="150"/>
-                    <ColumnConstraints hgrow="ALWAYS"/>
-                </columnConstraints>
-                <Label text="Amount" GridPane.rowIndex="0"/>
-                <TextField fx:id="amountField" promptText="250.00" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
-            </GridPane>
-            <Label text="The donation is recorded now. Payment is part of Phase 2." styleClass="muted"/>
-        </VBox>
-
-        <HBox spacing="10">
-            <Button text="Submit donation" defaultButton="true" onAction="#submit" styleClass="primary"/>
-            <Button text="Clear" onAction="#clearForm"/>
-        </HBox>
-        <Label fx:id="message" wrapText="true" styleClass="message"/>
+<!-- DON-2, DON-3, DON-4, DON-9. Step 1 chooses food or money; step 2 is the form for that choice. -->
+<VBox xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.fooddonation.controller.SubmitDonationController" styleClass="page" spacing="14">
+    <VBox spacing="2">
+        <Button fx:id="backButton" text="← Food or money" onAction="#back" styleClass="link"/>
+        <Label fx:id="titleLabel" text="New donation" styleClass="page-title"/>
+        <Label fx:id="subtitleLabel" styleClass="muted"/>
     </VBox>
-</ScrollPane>
+
+    <StackPane VBox.vgrow="ALWAYS">
+        <!-- step 1: food or money -->
+        <VBox fx:id="chooseStep" alignment="CENTER" spacing="26">
+            <VBox alignment="CENTER" spacing="6">
+                <Label text="What would you like to give?" styleClass="choose-title"/>
+                <Label text="Choose one. You can go back and change it." styleClass="muted"/>
+            </VBox>
+            <HBox alignment="CENTER" spacing="22">
+                <Button onAction="#chooseFood" styleClass="choice" prefHeight="290" maxHeight="-Infinity">
+                    <graphic>
+                        <VBox alignment="CENTER" spacing="10" prefWidth="250">
+                            <Label text="🍲" styleClass="choice-icon, food"/>
+                            <Label text="Donate food" styleClass="choice-title"/>
+                            <Label text="Cooked meals, groceries, fresh produce or chilled and frozen food. A volunteer can collect it."
+                                   styleClass="muted" wrapText="true" textAlignment="CENTER"/>
+                            <Label text="Continue →" styleClass="choice-go"/>
+                        </VBox>
+                    </graphic>
+                </Button>
+                <Button onAction="#chooseMoney" styleClass="choice" prefHeight="290" maxHeight="-Infinity">
+                    <graphic>
+                        <VBox alignment="CENTER" spacing="10" prefWidth="250">
+                            <Label text="💵" styleClass="choice-icon, money"/>
+                            <Label text="Donate money" styleClass="choice-title"/>
+                            <Label text="Support the charity with any amount. You get a receipt for your taxes."
+                                   styleClass="muted" wrapText="true" textAlignment="CENTER"/>
+                            <Label text="Continue →" styleClass="choice-go"/>
+                        </VBox>
+                    </graphic>
+                </Button>
+            </HBox>
+            <Pane prefHeight="40"/>
+        </VBox>
+
+        <!-- step 2: the form on the left, the live summary on the right -->
+        <HBox fx:id="formStep" spacing="18">
+            <ScrollPane fitToWidth="true" HBox.hgrow="ALWAYS" styleClass="plain-scroll">
+                <VBox spacing="12">
+                    <!-- food (DON-2, DON-3, DON-4) -->
+                    <VBox fx:id="foodFields" spacing="12">
+                        <VBox styleClass="form-card">
+                            <HBox styleClass="card-head"><Label text="1" styleClass="step-num"/><Label text="Type of food" styleClass="card-title"/></HBox>
+                            <HBox fx:id="typeTiles" spacing="10"/>
+                        </VBox>
+                        <VBox styleClass="form-card">
+                            <HBox styleClass="card-head"><Label text="2" styleClass="step-num"/><Label text="Food details" styleClass="card-title"/></HBox>
+                            <GridPane hgap="12" vgap="10">
+                                <VBox styleClass="field" GridPane.columnIndex="0" GridPane.rowIndex="0" GridPane.columnSpan="2">
+                                    <Label text="Food name" styleClass="field-label"/>
+                                    <TextField fx:id="foodNameField" promptText="e.g. Rice and chicken"/>
+                                </VBox>
+                                <HBox spacing="12" GridPane.columnIndex="2" GridPane.rowIndex="0">
+                                    <VBox styleClass="field" HBox.hgrow="ALWAYS">
+                                        <Label text="Quantity" styleClass="field-label"/>
+                                        <TextField fx:id="quantityField" promptText="5"/>
+                                    </VBox>
+                                    <VBox styleClass="field" HBox.hgrow="ALWAYS">
+                                        <Label text="Unit" styleClass="field-label"/>
+                                        <ComboBox fx:id="unitBox" maxWidth="Infinity"/>
+                                    </VBox>
+                                </HBox>
+                                <VBox styleClass="field" GridPane.columnIndex="0" GridPane.rowIndex="1" GridPane.hgrow="ALWAYS">
+                                    <Label text="Category" styleClass="field-label"/>
+                                    <ComboBox fx:id="categoryBox" promptText="Choose" maxWidth="Infinity"/>
+                                </VBox>
+                                <VBox styleClass="field" GridPane.columnIndex="1" GridPane.rowIndex="1" GridPane.hgrow="ALWAYS">
+                                    <Label text="Storage" styleClass="field-label"/>
+                                    <ComboBox fx:id="storageBox" promptText="Choose" maxWidth="Infinity"/>
+                                </VBox>
+                                <VBox styleClass="field" GridPane.columnIndex="2" GridPane.rowIndex="1" GridPane.hgrow="ALWAYS">
+                                    <Label text="Expiry / best before" styleClass="field-label"/>
+                                    <DatePicker fx:id="expiryPicker" maxWidth="Infinity"/>
+                                </VBox>
+                            </GridPane>
+                        </VBox>
+                        <VBox styleClass="form-card">
+                            <HBox styleClass="card-head"><Label text="3" styleClass="step-num"/><Label text="Pickup" styleClass="card-title"/></HBox>
+                            <HBox spacing="12">
+                                <VBox styleClass="field" prefWidth="150">
+                                    <Label text="Day" styleClass="field-label"/>
+                                    <DatePicker fx:id="pickupDatePicker" maxWidth="Infinity"/>
+                                </VBox>
+                                <VBox styleClass="field" prefWidth="110">
+                                    <Label text="From" styleClass="field-label"/>
+                                    <ComboBox fx:id="pickupFromBox" maxWidth="Infinity"/>
+                                </VBox>
+                                <VBox styleClass="field" prefWidth="110">
+                                    <Label text="To" styleClass="field-label"/>
+                                    <ComboBox fx:id="pickupToBox" maxWidth="Infinity"/>
+                                </VBox>
+                                <VBox styleClass="field" HBox.hgrow="ALWAYS">
+                                    <Label text="Address" styleClass="field-label"/>
+                                    <TextField fx:id="pickupAddressField"/>
+                                </VBox>
+                            </HBox>
+                        </VBox>
+                        <VBox styleClass="form-card">
+                            <HBox styleClass="card-head">
+                                <Label text="4" styleClass="step-num"/><Label text="Extra services" styleClass="card-title"/>
+                                <Label text=" · optional, they raise the priority" styleClass="muted"/>
+                            </HBox>
+                            <GridPane fx:id="addOnGrid" hgap="10" vgap="10"/>
+                        </VBox>
+                    </VBox>
+
+                    <!-- money (DON-9) -->
+                    <VBox fx:id="moneyFields" styleClass="form-card" spacing="12">
+                        <Label text="Amount" styleClass="card-title"/>
+                        <HBox fx:id="amountChips" spacing="10"/>
+                        <VBox styleClass="field" maxWidth="320">
+                            <Label text="Or another amount" styleClass="field-label"/>
+                            <TextField fx:id="amountField" promptText="250" styleClass="big-input"/>
+                        </VBox>
+                        <Label text="The donation is recorded now and you get a receipt once it is accepted. Online and check payment come in Phase 2."
+                               styleClass="muted" wrapText="true"/>
+                    </VBox>
+                </VBox>
+            </ScrollPane>
+
+            <VBox styleClass="summary" prefWidth="300" minWidth="280">
+                <VBox styleClass="summary-body" spacing="12" VBox.vgrow="ALWAYS">
+                    <Label text="SUMMARY" styleClass="summary-head"/>
+                    <VBox spacing="2">
+                        <Label fx:id="summaryTitle" styleClass="summary-title" wrapText="true"/>
+                        <Label fx:id="summaryMeta" styleClass="muted" wrapText="true"/>
+                    </VBox>
+                    <HBox fx:id="summaryTags" spacing="4"/>
+                    <Pane styleClass="divider"/>
+                    <VBox spacing="2">
+                        <Label text="Priority" styleClass="muted"/>
+                        <HBox spacing="8" alignment="BASELINE_LEFT">
+                            <Label fx:id="priorityFrom" styleClass="prio-from"/>
+                            <Label fx:id="priorityArrow" text="→" styleClass="muted"/>
+                            <Label fx:id="priorityTo" styleClass="prio-to"/>
+                            <Label fx:id="priorityUp" styleClass="prio-up"/>
+                        </HBox>
+                        <Label fx:id="priorityHow" styleClass="meta" wrapText="true"/>
+                    </VBox>
+                    <Pane styleClass="divider"/>
+                    <VBox fx:id="pickupSummary" spacing="2">
+                        <Label text="Pickup" styleClass="muted"/>
+                        <Label fx:id="summaryPickup" styleClass="field-label"/>
+                        <Label fx:id="summaryAddress" styleClass="meta" wrapText="true"/>
+                    </VBox>
+                    <VBox fx:id="expirySummary" spacing="2">
+                        <Label text="Expires" styleClass="muted"/>
+                        <Label fx:id="summaryExpiry" styleClass="field-label"/>
+                    </VBox>
+                    <VBox fx:id="receiptSummary" spacing="2">
+                        <Label text="Receipt" styleClass="muted"/>
+                        <Label text="After the coordinator accepts it" styleClass="field-label"/>
+                    </VBox>
+                    <Label fx:id="message" wrapText="true" styleClass="message"/>
+                </VBox>
+                <HBox styleClass="summary-actions" spacing="10">
+                    <Button text="Clear" onAction="#clearForm"/>
+                    <Button fx:id="submitButton" text="Submit donation" defaultButton="true" onAction="#submit"
+                            styleClass="primary" HBox.hgrow="ALWAYS" maxWidth="Infinity"/>
+                </HBox>
+            </VBox>
+        </HBox>
+    </StackPane>
+</VBox>

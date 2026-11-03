@@ -14,16 +14,17 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 
-/** DON-7: create, read, update and delete food categories, storage types and donation statuses. */
+/**
+ * DON-7: create, read, update and delete food categories and storage types.
+ * Donation statuses are not shown: the five lifecycle statuses are fixed (protected system rows).
+ */
 public class LookupTablesController implements Refreshable {
     private final LookupRepository lookups;
     private final Session session;
 
     @FXML private ComboBox<LookupType> typeBox;
     @FXML private TableView<LookupEntry> table;
-    @FXML private TableColumn<LookupEntry, String> idColumn;
     @FXML private TableColumn<LookupEntry, String> nameColumn;
-    @FXML private TableColumn<LookupEntry, String> systemColumn;
     @FXML private TextField nameField;
     @FXML private Button renameButton;
     @FXML private Button deleteButton;
@@ -36,14 +37,12 @@ public class LookupTablesController implements Refreshable {
 
     @FXML
     private void initialize() {
-        typeBox.getItems().setAll(LookupType.values());
+        typeBox.getItems().setAll(LookupType.FOOD_CATEGORY, LookupType.STORAGE_TYPE);
         typeBox.setValue(LookupType.FOOD_CATEGORY);
         Controls.showAs(typeBox, Formats::label);
         typeBox.valueProperty().addListener((obs, old, type) -> refresh());
 
-        Controls.column(idColumn, e -> String.valueOf(e.getId()));
         Controls.column(nameColumn, LookupEntry::getName);
-        Controls.column(systemColumn, e -> e.isSystem() ? "Protected" : "");
         table.getSelectionModel().selectedItemProperty().addListener((obs, old, selected) -> {
             nameField.setText(selected == null ? "" : selected.getName());
             boolean editable = selected != null && !selected.isSystem();

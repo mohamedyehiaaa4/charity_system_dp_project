@@ -11,6 +11,10 @@
 
 <VBox xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
       fx:controller="com.fooddonation.controller.ProfileController" styleClass="page" spacing="14" maxWidth="620">
+    <VBox spacing="2">
+        <Label text="Profile" styleClass="page-title"/>
+        <Label text="Your details and how you want to be notified." styleClass="muted"/>
+    </VBox>
     <GridPane styleClass="form" hgap="12" vgap="10">
         <columnConstraints>
             <ColumnConstraints minWidth="150"/>

@@ -2,37 +2,47 @@
 
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.Spinner?>
-<?import javafx.scene.control.TableColumn?>
-<?import javafx.scene.control.TableView?>
-<?import javafx.scene.control.TextArea?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
 
 <VBox xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
-      fx:controller="com.fooddonation.controller.MyDonationsController" styleClass="page" spacing="12">
-    <TableView fx:id="table" VBox.vgrow="ALWAYS">
-        <columnResizePolicy><TableView fx:constant="CONSTRAINED_RESIZE_POLICY_FLEX_LAST_COLUMN"/></columnResizePolicy>
-        <columns>
-            <TableColumn fx:id="idColumn" text="No." prefWidth="50"/>
-            <TableColumn fx:id="descriptionColumn" text="Donation" prefWidth="260"/>
-            <TableColumn fx:id="detailsColumn" text="What" prefWidth="170"/>
-            <TableColumn fx:id="priorityColumn" text="Priority" prefWidth="65"/>
-            <TableColumn fx:id="statusColumn" text="Status" prefWidth="90"/>
-            <TableColumn fx:id="createdColumn" text="Submitted" prefWidth="120"/>
-            <TableColumn fx:id="reasonColumn" text="Rejection reason" prefWidth="160"/>
-        </columns>
-    </TableView>
-    <HBox spacing="10" alignment="CENTER_LEFT">
-        <Button fx:id="receiptButton" text="Show receipt" onAction="#showReceipt"/>
+      fx:controller="com.fooddonation.controller.MyDonationsController" styleClass="page" spacing="16">
+    <HBox spacing="10" alignment="BOTTOM_LEFT">
+        <VBox spacing="2">
+            <Label text="My donations" styleClass="page-title"/>
+            <Label text="Follow each donation from submission to delivery." styleClass="muted"/>
+        </VBox>
         <Pane HBox.hgrow="ALWAYS"/>
-        <Label text="Tax year"/>
-        <Spinner fx:id="yearSpinner" prefWidth="100" editable="true"/>
+        <Label text="Tax year" styleClass="muted"/>
+        <Spinner fx:id="yearSpinner" prefWidth="95" editable="true"/>
         <Button text="Annual summary" onAction="#showAnnualSummary"/>
-        <Button text="Refresh" onAction="#refresh"/>
     </HBox>
+
+    <HBox spacing="14">
+        <VBox styleClass="stat" HBox.hgrow="ALWAYS" maxWidth="Infinity">
+            <Label text="Total donations" styleClass="stat-label"/>
+            <Label fx:id="totalValue" styleClass="stat-value"/>
+        </VBox>
+        <VBox styleClass="stat" HBox.hgrow="ALWAYS" maxWidth="Infinity">
+            <Label text="Food donations" styleClass="stat-label"/>
+            <Label fx:id="foodValue" styleClass="stat-value"/>
+        </VBox>
+        <VBox styleClass="stat" HBox.hgrow="ALWAYS" maxWidth="Infinity">
+            <Label text="Money donated" styleClass="stat-label"/>
+            <Label fx:id="moneyValue" styleClass="stat-value"/>
+        </VBox>
+        <VBox styleClass="stat" HBox.hgrow="ALWAYS" maxWidth="Infinity">
+            <Label text="In progress" styleClass="stat-label"/>
+            <Label fx:id="progressValue" styleClass="stat-value"/>
+        </VBox>
+    </HBox>
+
     <Label fx:id="message" wrapText="true" styleClass="message"/>
-    <TextArea fx:id="output" editable="false" prefRowCount="9" styleClass="document"
-              promptText="Receipts and the annual summary appear here. Only approved, picked up or delivered donations get a receipt."/>
+
+    <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS" styleClass="plain-scroll">
+        <VBox fx:id="list" spacing="10"/>
+    </ScrollPane>
 </VBox>

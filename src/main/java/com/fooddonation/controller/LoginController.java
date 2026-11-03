@@ -13,10 +13,8 @@ import javafx.scene.control.TextField;
 
 import java.util.Optional;
 
-/** Sign in by email. Phase 1 has no passwords. */
+/** Sign in by email. */
 public class LoginController {
-    static final String COORDINATOR_EMAIL = "coordinator@fooddonation.org";
-
     private final AuthService auth;
     private final Session session;
     private final Navigator navigator;
@@ -35,18 +33,11 @@ public class LoginController {
         Optional<User> user = auth.login(emailField.getText());
         if (user.isEmpty()) {
             Controls.error(message, new IllegalArgumentException(
-                    "No account with that email. Register as a donor, or use the coordinator account."));
+                    "No account with that email. Register as a donor first."));
             return;
         }
         session.signIn(user.get());
         navigator.show(user.get().getRole() == Role.COORDINATOR ? View.COORDINATOR_PANEL : View.DONOR_PANEL);
-    }
-
-    /** Fills in the seeded coordinator account, to save typing while testing. */
-    @FXML
-    private void useCoordinator() {
-        emailField.setText(COORDINATOR_EMAIL);
-        signIn();
     }
 
     @FXML

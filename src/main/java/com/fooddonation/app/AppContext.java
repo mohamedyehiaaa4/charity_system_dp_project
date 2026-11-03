@@ -38,12 +38,13 @@ public class AppContext implements AutoCloseable {
     private final DonationService donationService;
     private final ReceiptService receipts;
     private final ExpiryScheduler scheduler;
+    private final DonationFactory factory;
 
     public AppContext(AppConfig config) {
         db = DatabaseConnection.getInstance();
         db.initialize();
 
-        DonationFactory factory = new DonationFactory();
+        factory = new DonationFactory();
         users = new UserRepository(db);
         lookups = new LookupRepository(db);
         donations = new DonationRepository(db, factory);
@@ -102,6 +103,10 @@ public class AppContext implements AutoCloseable {
 
     public NotificationService getNotifications() {
         return notifications;
+    }
+
+    public DonationFactory getFactory() {
+        return factory;
     }
 
     public DonationService getDonationService() {

@@ -35,7 +35,7 @@ public class Navigator {
         } else {
             scene.setRoot(root);
         }
-        stage.setTitle("Food Donation System · " + view.title());
+        stage.setTitle("Kheir · " + view.title());
     }
 
     private Parent load(String path) {

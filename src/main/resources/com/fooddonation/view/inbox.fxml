@@ -12,6 +12,10 @@
 
 <VBox xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
       fx:controller="com.fooddonation.controller.InboxController" styleClass="page" spacing="12">
+    <VBox spacing="2">
+        <Label text="Inbox" styleClass="page-title"/>
+        <Label text="Messages sent to you inside the app." styleClass="muted"/>
+    </VBox>
     <HBox spacing="10" alignment="CENTER_LEFT">
         <Label fx:id="summary" styleClass="muted"/>
         <Pane HBox.hgrow="ALWAYS"/>

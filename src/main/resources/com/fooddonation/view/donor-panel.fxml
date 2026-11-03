@@ -7,21 +7,29 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
 
-<!-- Each tab's content is its own view and controller; this file only arranges them. -->
+<!-- Each page's content is its own view and controller; this file only arranges them. -->
 <BorderPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
             fx:controller="com.fooddonation.controller.DonorPanelController">
-    <top>
-        <HBox styleClass="header" spacing="12">
-            <Label text="Donor control panel" styleClass="header-title"/>
-            <Pane HBox.hgrow="ALWAYS"/>
-            <Label fx:id="userLabel" styleClass="header-user"/>
-            <Button text="Sign out" onAction="#signOut"/>
-        </HBox>
-    </top>
+    <left>
+        <VBox styleClass="sidebar">
+            <HBox styleClass="brand">
+                <Label text="K" styleClass="logo"/>
+                <Label text="Kheir" styleClass="brand-name"/>
+            </HBox>
+            <VBox fx:id="nav" spacing="4"/>
+            <Pane VBox.vgrow="ALWAYS"/>
+            <VBox styleClass="sidebar-user">
+                <Label fx:id="userName" styleClass="user-name"/>
+                <Label fx:id="userEmail" styleClass="user-email"/>
+                <Button text="Sign out" onAction="#signOut"/>
+            </VBox>
+        </VBox>
+    </left>
     <center>
-        <TabPane fx:id="tabs" tabClosingPolicy="UNAVAILABLE">
-            <Tab fx:id="submitTab" text="Submit a donation">
+        <TabPane fx:id="tabs" tabClosingPolicy="UNAVAILABLE" styleClass="content-tabs">
+            <Tab fx:id="submitTab" text="+ New donation">
                 <fx:include fx:id="submit" source="submit-donation.fxml"/>
             </Tab>
             <Tab fx:id="donationsTab" text="My donations">
@@ -29,6 +37,9 @@
             </Tab>
             <Tab fx:id="inboxTab" text="Inbox">
                 <fx:include fx:id="inbox" source="inbox.fxml"/>
+            </Tab>
+            <Tab fx:id="logTab" text="My emails &amp; SMS">
+                <fx:include fx:id="log" source="message-log.fxml"/>
             </Tab>
             <Tab fx:id="profileTab" text="Profile">
                 <fx:include fx:id="profile" source="profile.fxml"/>

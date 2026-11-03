@@ -54,6 +54,14 @@ public class InboxController implements Refreshable {
         updateSummary();
     }
 
+    /** Unread messages, shown next to "Inbox" in the sidebar. */
+    @Override
+    public String badge() {
+        long unread = inbox.getMessages(session.getUser().toRecipient().getId()).stream()
+                .filter(m -> !m.isRead()).count();
+        return unread == 0 ? "" : String.valueOf(unread);
+    }
+
     private void updateSummary() {
         long unread = table.getItems().stream().filter(m -> !m.isRead()).count();
         summary.setText(table.getItems().size() + " messages, " + unread + " unread");

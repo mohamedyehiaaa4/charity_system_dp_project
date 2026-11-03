@@ -7,18 +7,24 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-<StackPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
-           fx:controller="com.fooddonation.controller.LoginController" styleClass="auth-page">
-    <VBox styleClass="card" maxWidth="420" maxHeight="-Infinity" spacing="14">
-        <Label text="Food Donation System" styleClass="title"/>
-        <Label text="Sign in with your email. Phase 1 has no passwords." styleClass="muted" wrapText="true"/>
-        <Label text="Email" styleClass="field-label"/>
-        <TextField fx:id="emailField" promptText="you@example.com" onAction="#signIn"/>
-        <Button text="Sign in" defaultButton="true" maxWidth="Infinity" onAction="#signIn" styleClass="primary"/>
-        <HBox spacing="10">
-            <Button text="Sign in as coordinator" onAction="#useCoordinator"/>
-            <Button text="Register as a donor" onAction="#register"/>
-        </HBox>
-        <Label fx:id="message" wrapText="true" styleClass="message"/>
+<HBox xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.fooddonation.controller.LoginController">
+    <VBox styleClass="brand-panel" prefWidth="420" minWidth="320" alignment="CENTER">
+        <Label text="K" styleClass="logo-big"/>
+        <Label text="Kheir" styleClass="brand-title"/>
+        <Label text="Connecting donors with people in need. Give food or money, and follow every donation from pickup to delivery."
+               styleClass="brand-text" wrapText="true" textAlignment="CENTER" maxWidth="320"/>
     </VBox>
-</StackPane>
+    <StackPane styleClass="auth-page" HBox.hgrow="ALWAYS">
+        <VBox styleClass="card" maxWidth="380" maxHeight="-Infinity" spacing="12">
+            <Label text="Welcome back" styleClass="title"/>
+            <Label text="Sign in with your email." styleClass="muted" wrapText="true"/>
+            <Label text="Email" styleClass="field-label"/>
+            <TextField fx:id="emailField" promptText="you@example.com" onAction="#signIn"/>
+            <Button text="Sign in" defaultButton="true" maxWidth="Infinity" onAction="#signIn" styleClass="primary"/>
+            <Label text="New here?" styleClass="muted" maxWidth="Infinity" alignment="CENTER"/>
+            <Button text="Register as a donor" maxWidth="Infinity" onAction="#register"/>
+            <Label fx:id="message" wrapText="true" styleClass="message"/>
+        </VBox>
+    </StackPane>
+</HBox>

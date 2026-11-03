@@ -3,12 +3,15 @@ package com.fooddonation.ui;
 import com.fooddonation.model.donation.Donation;
 import com.fooddonation.model.donation.FoodDonation;
 import com.fooddonation.model.donation.MoneyDonation;
+import com.fooddonation.model.donation.addon.DonationDecorator;
+import com.fooddonation.model.lookup.DonationStatus;
 import com.fooddonation.model.lookup.LookupEntry;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 /** How model values are shown on screen. Display rules live here, not in the model or the controllers. */
 public final class Formats {
@@ -66,5 +69,44 @@ public final class Formats {
 
     public static String status(Donation donation) {
         return donation.getStatus() == null ? "" : donation.getStatus().getName();
+    }
+
+    /** "Rice and chicken · 5 kg" for food, "Money · 250" for money. */
+    public static String what(Donation donation) {
+        Donation base = donation.getBaseDonation();
+        if (base instanceof FoodDonation food) {
+            String quantity = BigDecimal.valueOf(food.getQuantity()).stripTrailingZeros().toPlainString();
+            String unit = food.getUnit() == null ? "" : " " + food.getUnit().name().toLowerCase();
+            return (food.getFoodName() == null ? "Food" : food.getFoodName()) + " · " + quantity + unit;
+        }
+        if (base instanceof MoneyDonation money && money.getAmount() != null) {
+            return "Money · " + money.getAmount().toPlainString();
+        }
+        return "";
+    }
+
+    /** The add-ons on a donation as screen labels, e.g. ["Home pickup", "Urgent priority"]. */
+    public static List<String> addOns(Donation donation) {
+        return DonationDecorator.collectAddOns(donation).stream().map(Formats::label).toList();
+    }
+
+    /** Style class for the status badge, so each lifecycle status has its own colour. */
+    public static String statusStyle(Donation donation) {
+        return switch (status(donation)) {
+            case DonationStatus.SUBMITTED -> "s-submitted";
+            case DonationStatus.APPROVED -> "s-approved";
+            case DonationStatus.PICKED_UP -> "s-picked";
+            case DonationStatus.DELIVERED -> "s-delivered";
+            case DonationStatus.REJECTED -> "s-rejected";
+            default -> "s-other";
+        };
+    }
+
+    /** An active donation whose expiry day is today, tomorrow or the day after (the 48-hour warning window). */
+    public static boolean nearExpiry(Donation donation, LocalDate today) {
+        String status = status(donation);
+        LocalDate expiry = donation.getExpiry();
+        return expiry != null && !expiry.isBefore(today) && !expiry.isAfter(today.plusDays(2))
+                && !DonationStatus.REJECTED.equals(status) && !DonationStatus.DELIVERED.equals(status);
     }
 }

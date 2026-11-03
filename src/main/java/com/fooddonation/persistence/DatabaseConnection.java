@@ -53,7 +53,20 @@ public class DatabaseConnection {
     public synchronized void initialize() {
         runSqlFile("/schema.sql");
         addMissingColumns();
-        runSqlFile("/seed.sql");
+        // starting rows only go into a brand-new database, so a lookup the coordinator deletes stays deleted
+        if (isNewDatabase()) {
+            runSqlFile("/seed.sql");
+        }
+    }
+
+    /** No users yet means the database was just created; every used database has at least the coordinator. */
+    private boolean isNewDatabase() {
+        try (Statement st = getConnection().createStatement();
+             ResultSet rs = st.executeQuery("SELECT COUNT(*) FROM users")) {
+            return rs.getInt(1) == 0;
+        } catch (SQLException e) {
+            throw new IllegalStateException("Could not check the users table", e);
+        }
     }
 
     public synchronized void reset() {

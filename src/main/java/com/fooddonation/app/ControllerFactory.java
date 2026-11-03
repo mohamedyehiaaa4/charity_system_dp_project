@@ -32,7 +32,8 @@ public class ControllerFactory implements Callback<Class<?>, Object> {
 
         controllers.put(DonorPanelController.class, () -> new DonorPanelController(session, navigator));
         controllers.put(SubmitDonationController.class,
-                () -> new SubmitDonationController(app.getDonationService(), app.getLookups(), session));
+                () -> new SubmitDonationController(app.getDonationService(), app.getFactory(),
+                        app.getLookups(), session));
         controllers.put(MyDonationsController.class,
                 () -> new MyDonationsController(app.getDonationService(), app.getReceipts(), session));
         controllers.put(ProfileController.class, () -> new ProfileController(app.getAuth(), session));
@@ -43,7 +44,7 @@ public class ControllerFactory implements Callback<Class<?>, Object> {
                 () -> new ReviewDonationsController(app.getDonationService(), app.getReceipts(), session));
         controllers.put(LookupTablesController.class, () -> new LookupTablesController(app.getLookups(), session));
         controllers.put(MessageLogController.class,
-                () -> new MessageLogController(config.emailLog(), config.smsLog()));
+                () -> new MessageLogController(config.emailLog(), config.smsLog(), session));
     }
 
     @Override
