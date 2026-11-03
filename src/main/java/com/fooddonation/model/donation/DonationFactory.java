@@ -55,6 +55,9 @@ public class DonationFactory {
             }
             combined.addAll(addOns);
         }
+        if (!combined.isEmpty() && DonationDecorator.unwrap(donation) instanceof MoneyDonation) {
+            throw new IllegalArgumentException("Add-ons are only available for food donations");
+        }
         if (donation instanceof DonationDecorator) {
             combined.addAll(DonationDecorator.collectAddOns(donation));
             donation = DonationDecorator.unwrap(donation);
